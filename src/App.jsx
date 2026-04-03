@@ -21,6 +21,7 @@ import Gallery from "./pages/Gallery";
 
 import "swiper/css";
 import "swiper/css/navigation";
+import Addmission from "./pages/Addmission";
 
 // Pages
 
@@ -33,6 +34,7 @@ function Router() {
       <Route path="/ielts" component={Ielts} />
       <Route path="/pte" component={Pte} />
       <Route path="/gallery" component={Gallery} />
+      <Route path="/addmission" component={Addmission} />
 
       <Route path="/about/director" component={DirectorPage} />
       <Route

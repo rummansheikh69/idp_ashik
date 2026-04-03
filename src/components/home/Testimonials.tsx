@@ -21,7 +21,26 @@ export function Testimonials() {
   if (!reviews.length) return null;
 
   return (
-    <section className="py-24 bg-secondary/50">
+    <section className="py-24 bg-secondary/50 relative overflow-hidden">
+      <div
+        className="absolute inset-0 opacity-50"
+        style={{
+          backgroundImage:
+            "repeating-linear-gradient(135deg, hsl(358 68% 95%) 0px, hsl(358 68% 95%) 1px, transparent 1px, transparent 60px)",
+        }}
+      />
+      {/* Heading */}
+      <div className="text-center mb-14 relative z-10">
+        <div className="inline-flex items-center space-x-2 bg-primary/8 px-4 py-2 rounded-full mb-5 border border-primary/12">
+          <span className="text-primary font-semibold text-sm uppercase tracking-wider">
+            Reviews
+          </span>
+        </div>
+        <h2 className="text-4xl md:text-5xl font-display font-bold text-primary">
+          Success Stories From
+          <span className="text-accent">Our Students</span>
+        </h2>
+      </div>
       <div className="max-w-6xl mx-auto px-4 relative">
         <button
           onClick={() => swiperRef.current?.slidePrev()}
