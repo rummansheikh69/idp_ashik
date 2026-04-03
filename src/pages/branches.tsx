@@ -7,32 +7,37 @@ import {
   Facebook,
   Instagram,
   Youtube,
+  Linkedin,
   ArrowLeft,
 } from "lucide-react";
+import { FaWhatsapp } from "react-icons/fa";
+
 import { Link } from "wouter";
 
 const BRANCHES = [
   {
     city: "Jessore",
     address: "Bismillah Community Center, House#6/A Mona Tower, Monihar.",
-    phone: "+880 421-60000",
-    mobile: "+880 1711-000111",
-    email: "jessore@globalvisa.com",
+    phone: "+8801312010208",
+
+    email: "jashore@visaexpressbd.com",
     mapSrc:
       "https://maps.google.com/maps?q=Jessore,Bangladesh&t=&z=14&ie=UTF8&iwloc=&output=embed",
     social: {
-      facebook: "https://facebook.com/globalvisa.jessore",
-      instagram: "https://instagram.com/globalvisa.jessore",
+      facebook: "https://facebook.com/globalvisa.khulna",
+      instagram: "https://instagram.com/globalvisa.khulna",
       youtube: "https://youtube.com/@globalvisa",
+      whatsapp: "https://wa.me/8801718502964",
+      linkedin: "https://www.linkedin.com/company/visaexpress/",
     },
-    hours: "Sat – Thu: 9:00 AM – 6:00 PM",
+    hours: "10:00 AM – 7:00 PM",
   },
   {
     city: "Khulna",
     address: " Tribune Tower (Level#3), 2/B KDA Avenue (Dhaka Bank Building)",
-    phone: "+880 41-720000",
-    mobile: "+880 1722-000222",
-    email: "khulna@globalvisa.com",
+    phone: "+8801718502964",
+
+    email: "khulna@visaexpressbd.com",
     mapSrc:
       "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3677.5104813642683!2d89.55050037603236!3d22.82059572383406!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39ff9002f2b06059%3A0xbe526dba7b864771!2sVisa%20Express!5e0!3m2!1sen!2sbd!4v1775173725271!5m2!1sen!2sbd",
 
@@ -40,8 +45,10 @@ const BRANCHES = [
       facebook: "https://facebook.com/globalvisa.khulna",
       instagram: "https://instagram.com/globalvisa.khulna",
       youtube: "https://youtube.com/@globalvisa",
+      whatsapp: "https://wa.me/8801718502964",
+      linkedin: "https://www.linkedin.com/company/visaexpress/",
     },
-    hours: "Sat – Thu: 9:00 AM – 6:00 PM",
+    hours: "10:00 AM – 7:00 PM",
   },
 ];
 
@@ -77,7 +84,6 @@ function BranchCard({ branch }: { branch: (typeof BRANCHES)[0] }) {
             <p className="text-sm text-foreground font-medium">
               {branch.phone}
             </p>
-            <p className="text-sm text-foreground/70">{branch.mobile}</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -114,12 +120,28 @@ function BranchCard({ branch }: { branch: (typeof BRANCHES)[0] }) {
             <Instagram className="w-4 h-4" />
           </a>
           <a
+            href={branch.social.whatsapp}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-10 h-10 rounded-xl bg-green-500 flex items-center justify-center text-white hover:scale-110 transition-transform shadow-sm"
+          >
+            <FaWhatsapp className="w-4 h-4" />
+          </a>
+          <a
             href={branch.social.youtube}
             target="_blank"
             rel="noopener noreferrer"
             className="w-10 h-10 rounded-xl bg-red-600 flex items-center justify-center text-white hover:scale-110 transition-transform shadow-sm"
           >
             <Youtube className="w-4 h-4" />
+          </a>
+          <a
+            href={branch.social.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white hover:scale-110 transition-transform shadow-sm"
+          >
+            <Linkedin className="w-4 h-4" />
           </a>
         </div>
       </div>

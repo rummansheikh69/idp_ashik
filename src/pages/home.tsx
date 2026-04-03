@@ -35,13 +35,13 @@ export default function Home() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
               {/* Left: About content */}
-              <div className="pt-20 pb-20 lg:pt-24 lg:pb-28">
+              <div className="pt-20 pb-20 lg:pt-12 lg:pb-28">
                 <About />
               </div>
 
               {/* Right: Stats card — overlaps hero by a moderate amount */}
               <div className="hidden lg:block">
-                <div className="-mt-24 pb-20 relative z-30">
+                <div className="-mt-[70px] pb-20 relative z-30">
                   {/* Gradient above stats card — blends hero into card top */}
                   <div
                     className="absolute top-0 left-0 right-0 h-10 rounded-t-2xl pointer-events-none z-40"

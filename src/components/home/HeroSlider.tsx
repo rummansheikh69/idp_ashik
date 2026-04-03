@@ -53,7 +53,7 @@ export function HeroSlider() {
     setCurrent((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
 
   return (
-    <div className="relative h-[100svh] min-h-[600px] w-full bg-primary overflow-hidden">
+    <div className="relative h-[79svh] min-h-[600px] w-full bg-primary overflow-hidden">
       <AnimatePresence mode="wait">
         <motion.div
           key={current}

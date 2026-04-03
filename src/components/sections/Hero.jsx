@@ -35,7 +35,7 @@ export const Hero = () => {
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed">
               Expert coaching in Reading, Writing, Listening & Speaking. Join
-              thousands of successful students who have achieved Band 8.0+ with
+              thousands of successful students who have achieved Band 8.5 with
               our proven methodology.
             </p>
 

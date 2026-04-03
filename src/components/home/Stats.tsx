@@ -17,7 +17,7 @@ const stats = [
   { icon: GraduationCap, value: "7,500+", label: "Happy Students" },
   { icon: BadgeCheck, value: "99%", label: "Visa Ratio" },
   { icon: CalendarCheck, value: "12+", label: "Education Expo" },
-  { icon: Tv2, value: "200+", label: "Webinars/Events" },
+  { icon: Tv2, value: "200+", label: "Webinars/ Events" },
   { icon: Users, value: "50,000+", label: "Students Served" },
 ];
 
@@ -28,13 +28,13 @@ export function Stats() {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.7 }}
-      className="bg-primary rounded-2xl shadow-2xl shadow-primary/40 p-10 w-full"
+      className="bg-primary rounded-2xl shadow-2xl shadow-primary/40 p-10 pl-8 pr-20 md:py-32 w-full"
       style={{ zIndex: 30 }}
     >
       <h3 className="text-white/80 text-xs font-bold uppercase tracking-widest mb-7 border-b border-white/10 pb-4">
         Our Achievements
       </h3>
-      <div className="grid grid-cols-2 gap-x-8 gap-y-8">
+      <div className="grid grid-cols-2 gap-x-8 gap-y-8 md:gap-y-20">
         {stats.map((stat, i) => (
           <motion.div
             key={i}
@@ -48,7 +48,7 @@ export function Stats() {
               <stat.icon className="w-5 h-5 text-accent" />
             </div>
             <div>
-              <p className="text-3xl font-display font-bold text-white leading-none mb-1">
+              <p className=" text-2xl md:text-5xl font-display font-bold text-white leading-none mb-1">
                 {stat.value}
               </p>
               <p className="text-sm text-white/60 font-medium leading-tight">

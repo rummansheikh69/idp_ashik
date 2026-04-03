@@ -9,6 +9,7 @@ import {
   Instagram,
   Linkedin,
 } from "lucide-react";
+import { FaWhatsapp, FaYoutube } from "react-icons/fa";
 
 export function Footer() {
   return (
@@ -18,9 +19,9 @@ export function Footer() {
           {/* Brand */}
           <div className="space-y-6">
             <Link href="/" className="flex items-center space-x-2">
-              <div className="size-14 rounded bg-white p-1">
+              <div className="size-14 ">
                 <img
-                  src="/logo.png"
+                  src="/white-logo.png"
                   alt=""
                   className=" w-full h-full object-contain"
                 />
@@ -36,28 +37,39 @@ export function Footer() {
             </p>
             <div className="flex space-x-4">
               <a
-                href="#"
+                href="https://www.facebook.com/visaaexpress"
+                target="_blank"
                 className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-accent hover:text-primary transition-colors"
               >
                 <Facebook className="w-5 h-5" />
               </a>
               <a
-                href="#"
+                href="https://wa.me/+8801718502964"
+                target="_blank"
                 className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-accent hover:text-primary transition-colors"
               >
-                <Twitter className="w-5 h-5" />
+                <FaWhatsapp className="w-5 h-5" />
               </a>
               <a
-                href="#"
+                href="https://www.instagram.com/visa_express_bd/"
+                target="_blank"
                 className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-accent hover:text-primary transition-colors"
               >
                 <Instagram className="w-5 h-5" />
               </a>
               <a
-                href="#"
+                href="https://www.linkedin.com/company/visaexpress/"
+                target="_blank"
                 className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-accent hover:text-primary transition-colors"
               >
                 <Linkedin className="w-5 h-5" />
+              </a>
+              <a
+                href="https://www.youtube.com/@visa_express_bd"
+                target="_blank"
+                className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-accent hover:text-primary transition-colors"
+              >
+                <FaYoutube className="w-5 h-5" />
               </a>
             </div>
           </div>
@@ -237,16 +249,17 @@ export function Footer() {
               <li className="flex items-start space-x-3 text-white/70">
                 <MapPin className="w-5 h-5 text-accent shrink-0 mt-0.5" />
                 <span>
-                  Tribune Tower (Level#3), 2/B KDA Avenue (Dhaka Bank Building)
+                  Head Office - Tribune Tower (Level#3), 2/B KDA Avenue (Dhaka
+                  Bank Building)
                 </span>
               </li>
               <li className="flex items-center space-x-3 text-white/70">
                 <Phone className="w-5 h-5 text-accent shrink-0" />
-                <span>+1 (800) 123-4567</span>
+                <span>+8801718502964</span>
               </li>
               <li className="flex items-center space-x-3 text-white/70">
                 <Mail className="w-5 h-5 text-accent shrink-0" />
-                <span>info@globalvisa.com</span>
+                <span>khulna@visaexpressbd.com</span>
               </li>
             </ul>
           </div>
@@ -259,7 +272,11 @@ export function Footer() {
             © {new Date().getFullYear()} Visa Express. All rights reserved.
           </p>
           <div className="flex space-x-5 mt-4 md:mt-0">
-            <a href="#" className="text-white/50 hover:text-white text-sm">
+            <a
+              href="https://sgp.mywhiteserver.com:2096/"
+              target="_blank"
+              className="text-white/50 hover:text-white text-sm"
+            >
               Webmail
             </a>
             <a

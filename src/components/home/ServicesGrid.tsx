@@ -10,11 +10,11 @@ export function ServicesGrid() {
         <div className="text-center max-w-3xl mx-auto mb-16">
           <div className="inline-flex items-center space-x-2 bg-primary/5 px-4 py-2 rounded-full mb-6 border border-primary/10">
             <span className="text-primary font-semibold text-sm uppercase tracking-wider">
-              Our Services
+              Solutions
             </span>
           </div>
           <h2 className="text-4xl md:text-5xl font-display font-bold text-primary mb-6">
-            Comprehensive <span className="text-accent">Solutions</span>
+            Our <span className="text-accent">Services</span>
           </h2>
           <p className="text-lg text-muted-foreground">
             From study abroad guidance to visa processing, we provide end-to-end
@@ -52,7 +52,7 @@ export function ServicesGrid() {
                 <h3 className="text-xl font-display font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
                   {service.title}
                 </h3>
-                <p className="text-muted-foreground mb-6 flex-grow text-base">
+                <p className="text-muted-foreground mb-6 flex-grow text-base text-justify">
                   {service.shortDesc}
                 </p>
               </div>

@@ -297,7 +297,7 @@ export default function EuropeanCountriesPage() {
                 )}
 
                 <Link
-                  href="/#counseling"
+                  href="/apply"
                   className="mt-3 inline-flex bg-primary text-white font-bold py-3 px-7 rounded-xl hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20 text-sm"
                 >
                   Enquire About {c.name}

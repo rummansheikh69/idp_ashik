@@ -83,17 +83,17 @@ export function Counseling() {
 
             <div className="space-y-5">
               {[
-                { icon: Phone, label: "Call Us", value: "+44 20 7946 0958" },
+                { icon: Phone, label: "Call Us", value: "+8801718502964" },
                 {
                   icon: Mail,
                   label: "Email Us",
-                  value: "counsel@globalvisa.com",
+                  value: "khulna@visaexpressbd.com",
                 },
                 {
                   icon: MapPin,
                   label: "Visit Us",
                   value:
-                    "Tribune Tower (Level#3), 2/B KDA Avenue. (Dhaka Bank Building)",
+                    "Head Office - Tribune Tower (Level#3), 2/B KDA Avenue. (Dhaka Bank Building)",
                 },
               ].map(({ icon: Icon, label, value }) => (
                 <div key={label} className="flex items-start gap-4 group">
@@ -220,19 +220,13 @@ export function Counseling() {
                         <label className="block text-sm font-semibold text-foreground/70 mb-1.5">
                           Country of Apply *
                         </label>
-                        <select
-                          required
+                        <input
+                          type="text"
                           value={form.country}
                           onChange={(e) => set("country", e.target.value)}
-                          className="w-full px-4 py-3 rounded-xl border border-border bg-secondary/40 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition appearance-none"
-                        >
-                          <option value="">Select country</option>
-                          {COUNTRIES.map((c) => (
-                            <option key={c} value={c}>
-                              {c}
-                            </option>
-                          ))}
-                        </select>
+                          placeholder="United States"
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-secondary/40 text-foreground placeholder:text-muted-foreground/60 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
+                        />
                       </div>
                     </div>
 

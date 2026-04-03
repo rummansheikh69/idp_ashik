@@ -79,21 +79,7 @@ export function Navbar() {
                   >
                     Our Services
                   </Link>
-                  <Link
-                    href="/about/director"
-                    onClick={(e) => {
-                      e.preventDefault();
-
-                      if (window.location.pathname !== "/about/director") {
-                        window.location.href = "/about/director";
-                      } else {
-                        document.getElementById("director")?.scrollIntoView({
-                          behavior: "smooth",
-                        });
-                      }
-                    }}
-                    className={dropdownItemCls}
-                  >
+                  <Link href="/about/director" className={dropdownItemCls}>
                     Message from Director
                   </Link>
                   <Link

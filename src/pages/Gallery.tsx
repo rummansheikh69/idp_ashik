@@ -8,34 +8,40 @@ type Category = "All" | "Test Centers" | "Students" | "Achievements" | "Global";
 
 interface GalleryItem {
   id: number;
-
+  title: string;
+  subtitle?: string;
   src?: string;
 }
 
 const ITEMS: GalleryItem[] = [
   {
     id: 1,
-
+    title: "State-of-the-Art Testing Facilities",
+    subtitle: "Countries where PTE is administered",
     src: "https://i.pinimg.com/736x/8d/8f/0a/8d8f0a482a2fccc637a430b1acd756c5.jpg",
   },
   {
     id: 2,
-
+    title: "70+",
+    subtitle: "Countries where PTE is administered",
     src: "https://reutersagency.com/hs-fs/hubfs/Home%20Images/Home%20Hero/Main%20screen%20Jan%2025/reuters-agency-home-hero-jan-25-1-california-wildfires-2.webp?width=1240&height=827&name=reuters-agency-home-hero-jan-25-1-california-wildfires-2.webp",
   },
   {
     id: 3,
-
+    title: "Prepare with Confidence",
+    subtitle: "Countries where PTE is administered",
     src: "https://blog.onevasco.com/wp-content/uploads/Famous-Buildings-in-Australia.jpg",
   },
   {
     id: 4,
-
+    title: "48hrs",
+    subtitle: "Average results delivery time",
     src: "https://i.pinimg.com/736x/8d/8f/0a/8d8f0a482a2fccc637a430b1acd756c5.jpg",
   },
   {
     id: 5,
-
+    title: "Computer-Based",
+    subtitle: "Modern, bias-free AI scoring for every candidate",
     src: "https://thumbs.dreamstime.com/b/beautiful-rain-forest-ang-ka-nature-trail-doi-inthanon-national-park-thailand-36703721.jpg",
   },
 ];
@@ -155,6 +161,17 @@ function ImageCard({ item }: { item: GalleryItem }) {
           <ZoomIn className="w-4 h-4 text-white" />
         </div>
       </div>
+      {/* Title & subtitle */}
+      <div className="absolute bottom-0 left-0 right-0 p-5 translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+        <p className="text-white font-semibold text-lg leading-tight">
+          {item.title}
+        </p>
+        {item.subtitle && (
+          <p className="text-white/70 text-sm mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-75">
+            {item.subtitle}
+          </p>
+        )}
+      </div>
     </>
   );
 }
@@ -188,6 +205,16 @@ function Lightbox({
           alt={item.title}
           className="w-full h-full object-cover max-h-[75vh]"
         />
+
+        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[#4A0010]/90 to-transparent p-6">
+          <span className="text-[#FF8FA3] text-xs font-semibold uppercase tracking-[0.15em] mb-1 block">
+            {item.category}
+          </span>
+          <h2 className="text-white text-2xl  font-bold">{item.title}</h2>
+          {item.subtitle && (
+            <p className="text-white/70 text-sm mt-1">{item.subtitle}</p>
+          )}
+        </div>
 
         <button
           onClick={onClose}

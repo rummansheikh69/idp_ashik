@@ -19,6 +19,9 @@ import Ielts from "./pages/Ielts";
 import Pte from "./pages/Pte";
 import Gallery from "./pages/Gallery";
 
+import "swiper/css";
+import "swiper/css/navigation";
+
 // Pages
 
 const queryClient = new QueryClient();

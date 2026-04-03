@@ -4,7 +4,7 @@ import { Users, Target, Award, Trophy } from "lucide-react";
 
 const stats = [
   { icon: Users, value: "5000+", label: "Students Trained" },
-  { icon: Target, value: "9.0", label: "Band Achievers" },
+  { icon: Target, value: "8.5", label: "Band Achievers" },
   { icon: Award, value: "15+", label: "Expert Trainers" },
   { icon: Trophy, value: "98%", label: "Success Rate" },
 ];
