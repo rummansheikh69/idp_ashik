@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ZoomIn, ArrowRight } from "lucide-react";
-import { Navbar } from "../components/layout/navbar";
-import { Footer } from "../components/layout/footer";
+import { Navbar } from "../components/layout/Navbar";
+import { Footer } from "../components/layout/Footer";
 
 type Category = "All" | "Test Centers" | "Students" | "Achievements" | "Global";
 
