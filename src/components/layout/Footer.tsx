@@ -279,12 +279,12 @@ export function Footer() {
             >
               Webmail
             </a>
-            <a
+            <Link
               href="/addmission"
               className="text-white/50 hover:text-white text-sm"
             >
               Go
-            </a>
+            </Link>
           </div>
         </div>
       </div>
