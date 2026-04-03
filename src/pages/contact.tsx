@@ -19,7 +19,7 @@ const INFO_ITEMS = [
   {
     icon: MapPin,
     label: "Head Office",
-    value: "Rahman Plaza, 2nd Floor, Court Road, Jessore - 7400, Bangladesh",
+    value: " Tribune Tower (Level#3), 2/B KDA Avenue (Dhaka Bank Building)",
   },
   {
     icon: Phone,
@@ -159,7 +159,7 @@ export default function ContactPage() {
               {/* Map */}
               <div className="rounded-2xl overflow-hidden border border-border shadow-sm">
                 <iframe
-                  src="https://maps.google.com/maps?q=Jessore,Bangladesh&t=&z=13&ie=UTF8&iwloc=&output=embed"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3677.5104813642683!2d89.55050037603236!3d22.82059572383406!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39ff9002f2b06059%3A0xbe526dba7b864771!2sVisa%20Express!5e0!3m2!1sen!2sbd!4v1775173725271!5m2!1sen!2sbd"
                   title="GlobalVisa Head Office location"
                   className="w-full h-56 border-0"
                   loading="lazy"

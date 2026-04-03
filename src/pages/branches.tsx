@@ -14,7 +14,7 @@ import { Link } from "wouter";
 const BRANCHES = [
   {
     city: "Jessore",
-    address: "Rahman Plaza, 2nd Floor, Court Road, Jessore - 7400, Bangladesh",
+    address: "Bismillah Community Center, House#6/A Mona Tower, Monihar.",
     phone: "+880 421-60000",
     mobile: "+880 1711-000111",
     email: "jessore@globalvisa.com",
@@ -29,12 +29,13 @@ const BRANCHES = [
   },
   {
     city: "Khulna",
-    address: "City Centre, 3rd Floor, KDA Avenue, Khulna - 9100, Bangladesh",
+    address: " Tribune Tower (Level#3), 2/B KDA Avenue (Dhaka Bank Building)",
     phone: "+880 41-720000",
     mobile: "+880 1722-000222",
     email: "khulna@globalvisa.com",
     mapSrc:
-      "https://maps.google.com/maps?q=Khulna,Bangladesh&t=&z=14&ie=UTF8&iwloc=&output=embed",
+      "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3677.5104813642683!2d89.55050037603236!3d22.82059572383406!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39ff9002f2b06059%3A0xbe526dba7b864771!2sVisa%20Express!5e0!3m2!1sen!2sbd!4v1775173725271!5m2!1sen!2sbd",
+
     social: {
       facebook: "https://facebook.com/globalvisa.khulna",
       instagram: "https://instagram.com/globalvisa.khulna",

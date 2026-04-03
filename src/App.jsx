@@ -15,6 +15,9 @@ import NotFound from "./pages/not-found";
 import { useEffect } from "react";
 import ScrollToTop from "./components/home/ScrollToTop";
 import ScrollToHash from "./components/home/ScrollToHash";
+import Ielts from "./pages/Ielts";
+import Pte from "./pages/Pte";
+import Gallery from "./pages/Gallery";
 
 // Pages
 
@@ -24,6 +27,9 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
+      <Route path="/ielts" component={Ielts} />
+      <Route path="/pte" component={Pte} />
+      <Route path="/gallery" component={Gallery} />
 
       <Route path="/about/director" component={DirectorPage} />
       <Route
@@ -51,7 +57,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+        <WouterRouter>
           <ScrollToTop />
           <ScrollToHash />
           <Router />

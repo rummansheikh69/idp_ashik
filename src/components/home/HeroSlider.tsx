@@ -2,13 +2,14 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import { Button } from "../ui/button";
+import { Link } from "wouter";
 
 const slides = [
   {
     image: "/banner1.png",
     tag: "Study Abroad",
     title: "Study in The USA, Canada & Australia",
-    subtitle:
+    description:
       "Book your free consultation with Certified Counsellors. We guide you from course selection to visa approval.",
   },
   {
@@ -16,7 +17,7 @@ const slides = [
       "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=2074&auto=format&fit=crop",
     tag: "Visa Processing",
     title: "Your Gateway to the World",
-    subtitle:
+    description:
       "Expert visa processing with guaranteed accuracy and speed. We make your global travel dreams a reality.",
   },
   {
@@ -24,7 +25,7 @@ const slides = [
       "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=2074&auto=format&fit=crop",
     tag: "University Admissions",
     title: "120+ Partner Universities Worldwide",
-    subtitle:
+    description:
       "Get access to top-ranked institutions across 16+ nationalities. Your academic future starts here.",
   },
   {
@@ -32,7 +33,7 @@ const slides = [
       "https://images.unsplash.com/photo-1555899434-94d1368aa7af?q=80&w=2070&auto=format&fit=crop",
     tag: "Expert Guidance",
     title: "99% Visa Success Rate",
-    subtitle:
+    description:
       "Our experienced consultants have helped over 50,000 students achieve their international education goals.",
   },
 ];
@@ -91,23 +92,18 @@ export function HeroSlider() {
                 {slides[current].title}
               </h1>
               <p className="text-lg md:text-xl text-white/80 mb-10 leading-relaxed max-w-xl">
-                {slides[current].subtitle}
+                {slides[current].description}
               </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button
-                  size="lg"
-                  className="bg-accent text-primary hover:bg-accent/90 text-lg px-8 py-6 rounded-full font-bold shadow-xl shadow-accent/20"
-                >
-                  Start Application
-                  <ChevronRight className="ml-2 w-5 h-5" />
-                </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="text-white border-white/30 hover:bg-white/10 hover:text-white text-lg px-8 py-6 rounded-full font-semibold backdrop-blur-sm"
-                >
-                  Track Status
-                </Button>
+              <div className=" hidden md:flex flex-col sm:flex-row gap-4">
+                <Link href="/apply">
+                  <Button
+                    size="lg"
+                    className="bg-accent text-primary hover:bg-accent/90 text-lg px-8 py-6 rounded-full font-bold shadow-xl shadow-accent/20"
+                  >
+                    Start Application
+                    <ChevronRight className="ml-2 w-5 h-5" />
+                  </Button>
+                </Link>
               </div>
             </motion.div>
           </AnimatePresence>

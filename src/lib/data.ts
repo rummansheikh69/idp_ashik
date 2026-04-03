@@ -11,13 +11,19 @@ import {
   MessageSquare,
   FileCheck2,
   Stamp,
+  BookOpenCheck,
+  Languages,
+  Brain,
+  ClipboardPenLine,
+  Bed,
+  TicketCheck,
 } from "lucide-react";
 
 export const SERVICES = [
   {
     id: "eligibility-check",
     title: "Eligibility Check",
-    icon: Plane,
+    icon: ClipboardCheck,
     image:
       "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800&auto=format&fit=crop",
     shortDesc:
@@ -26,7 +32,7 @@ export const SERVICES = [
   {
     id: "language-preparation",
     title: "Language Preparation",
-    icon: GraduationCap,
+    icon: BookOpenCheck,
     image:
       "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=800&auto=format&fit=crop",
     shortDesc:
@@ -35,7 +41,7 @@ export const SERVICES = [
   {
     id: "language-testing-partner",
     title: "Language Testing Partner",
-    icon: Briefcase,
+    icon: Languages,
     image:
       "https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=800&auto=format&fit=crop",
     shortDesc:
@@ -44,7 +50,7 @@ export const SERVICES = [
   {
     id: "free-counselling",
     title: "Free Counselling",
-    icon: Building,
+    icon: Brain,
     image:
       "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=800&auto=format&fit=crop",
     shortDesc:
@@ -53,7 +59,7 @@ export const SERVICES = [
   {
     id: "free-application",
     title: "Free Application",
-    icon: Users,
+    icon: ClipboardPenLine,
     image:
       "https://images.unsplash.com/photo-1511895426328-dc8714191011?q=80&w=800&auto=format&fit=crop",
     shortDesc:
@@ -62,7 +68,7 @@ export const SERVICES = [
   {
     id: "interview-preparation",
     title: "Interview Preparation",
-    icon: RefreshCw,
+    icon: Users,
     image:
       "https://images.unsplash.com/photo-1530521954074-e64f6810b32d?q=80&w=800&auto=format&fit=crop",
     shortDesc:
@@ -71,7 +77,7 @@ export const SERVICES = [
   {
     id: "visa-application",
     title: "Visa Application",
-    icon: RefreshCw,
+    icon: ClipboardCheck,
     image:
       "https://images.unsplash.com/photo-1530521954074-e64f6810b32d?q=80&w=800&auto=format&fit=crop",
     shortDesc:
@@ -80,11 +86,20 @@ export const SERVICES = [
   {
     id: "accommodation",
     title: "Accommodation",
-    icon: RefreshCw,
+    icon: Bed,
     image:
       "https://images.unsplash.com/photo-1530521954074-e64f6810b32d?q=80&w=800&auto=format&fit=crop",
     shortDesc:
       "Visa Express assists students in securing safe, comfortable, and affordable accommodation near their universities. We provide guidance on housing options, booking support, and relocation advice to ensure a smooth transition. Our goal is to help students settle and focus on their studies abroad.",
+  },
+  {
+    id: "pre-arrival-support",
+    title: "Pre-Arrival and Air Ticket Confirmation",
+    icon: TicketCheck,
+    image:
+      "https://images.unsplash.com/photo-1530521954074-e64f6810b32d?q=80&w=800&auto=format&fit=crop",
+    shortDesc:
+      "Visa Express provides complete pre-arrival support, including guidance on travel planning and air ticket confirmation. We assist students in booking affordable flights, preparing travel documents, and understanding arrival procedures, ensuring a smooth and stress-free journey to their study destination abroad.",
   },
 ];
 

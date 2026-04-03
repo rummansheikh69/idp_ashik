@@ -176,6 +176,13 @@ export function Navbar() {
               Branches
             </Link>
 
+            <Link
+              href="/gallery"
+              className={`px-3 py-2 font-medium text-sm transition-colors hover:text-accent ${textCls(isScrolled, location)}`}
+            >
+              Gallery
+            </Link>
+
             {/* Contact */}
             <Link
               href="/contact"
@@ -223,7 +230,9 @@ export function Navbar() {
             <div className="flex flex-col px-4 py-4 space-y-1">
               <Link
                 href="/"
-                onClick={() => setMobileOpen(false)}
+                onClick={() => {
+                  setMobileOpen(false);
+                }}
                 className="py-2.5 px-3 font-medium text-foreground border-b border-border/40"
               >
                 Home
@@ -248,21 +257,36 @@ export function Navbar() {
                   <div className="pl-4 bg-secondary/40 rounded-lg mt-1 mb-1 py-1">
                     <Link
                       href="/#services"
-                      onClick={() => setMobileOpen(false)}
+                      onClick={(e) => {
+                        setMobileOpen(false);
+                        e.preventDefault();
+
+                        if (window.location.pathname !== "/") {
+                          window.location.href = "/#services";
+                        } else {
+                          document.getElementById("services")?.scrollIntoView({
+                            behavior: "smooth",
+                          });
+                        }
+                      }}
                       className="block py-2 px-3 text-sm text-foreground/80"
                     >
                       Our Services
                     </Link>
                     <Link
                       href="/about/director"
-                      onClick={() => setMobileOpen(false)}
+                      onClick={() => {
+                        setMobileOpen(false);
+                      }}
                       className="block py-2 px-3 text-sm text-foreground/80"
                     >
                       Message from Director
                     </Link>
                     <Link
                       href="/#counseling"
-                      onClick={() => setMobileOpen(false)}
+                      onClick={() => {
+                        setMobileOpen(false);
+                      }}
                       className="block py-2 px-3 text-sm text-foreground/80"
                     >
                       Book an Appointment
@@ -271,7 +295,7 @@ export function Navbar() {
                 )}
               </div>
 
-              {/* Language Courses mobile */}
+              {/* Study abroad mobile */}
               <div>
                 <button
                   onClick={() =>
@@ -279,7 +303,7 @@ export function Navbar() {
                   }
                   className="w-full flex justify-between items-center py-2.5 px-3 font-medium text-foreground border-b border-border/40"
                 >
-                  Language Courses{" "}
+                  Study Abroad{" "}
                   <ChevronDown
                     className={`w-4 h-4 transition-transform ${mobileExpanded === "lang" ? "rotate-180" : ""}`}
                   />
@@ -288,24 +312,69 @@ export function Navbar() {
                   <div className="pl-4 bg-secondary/40 rounded-lg mt-1 mb-1 py-1">
                     <Link
                       href="/language-courses/english"
-                      onClick={() => setMobileOpen(false)}
+                      onClick={() => {
+                        setMobileOpen(false);
+                      }}
                       className="block py-2 px-3 text-sm text-foreground/80"
                     >
-                      🇬🇧 English Countries
+                      English Countries
                     </Link>
                     <Link
                       href="/language-courses/european"
-                      onClick={() => setMobileOpen(false)}
+                      onClick={() => {
+                        setMobileOpen(false);
+                      }}
                       className="block py-2 px-3 text-sm text-foreground/80"
                     >
-                      🇪🇺 European Countries
+                      European Countries
                     </Link>
                     <Link
                       href="/language-courses/other"
-                      onClick={() => setMobileOpen(false)}
+                      onClick={() => {
+                        setMobileOpen(false);
+                      }}
                       className="block py-2 px-3 text-sm text-foreground/80"
                     >
-                      🌏 Other Countries
+                      Other Countries
+                    </Link>
+                  </div>
+                )}
+              </div>
+
+              {/*  Language Courses mobile */}
+              <div>
+                <button
+                  onClick={() =>
+                    setMobileExpanded(
+                      mobileExpanded === "study" ? null : "study",
+                    )
+                  }
+                  className="w-full flex justify-between items-center py-2.5 px-3 font-medium text-foreground border-b border-border/40"
+                >
+                  Language Courses{" "}
+                  <ChevronDown
+                    className={`w-4 h-4 transition-transform ${mobileExpanded === "study" ? "rotate-180" : ""}`}
+                  />
+                </button>
+                {mobileExpanded === "study" && (
+                  <div className="pl-4 bg-secondary/40 rounded-lg mt-1 mb-1 py-1">
+                    <Link
+                      href="/ielts"
+                      onClick={() => {
+                        setMobileOpen(false);
+                      }}
+                      className="block py-2 px-3 text-sm text-foreground/80"
+                    >
+                      IELTS
+                    </Link>
+                    <Link
+                      href="/pte"
+                      onClick={() => {
+                        setMobileOpen(false);
+                      }}
+                      className="block py-2 px-3 text-sm text-foreground/80"
+                    >
+                      PTE
                     </Link>
                   </div>
                 )}
@@ -313,14 +382,27 @@ export function Navbar() {
 
               <Link
                 href="/branches"
-                onClick={() => setMobileOpen(false)}
+                onClick={() => {
+                  setMobileOpen(false);
+                }}
                 className="py-2.5 px-3 font-medium text-foreground border-b border-border/40"
               >
                 Branches
               </Link>
               <Link
+                href="/gallery"
+                onClick={() => {
+                  setMobileOpen(false);
+                }}
+                className="py-2.5 px-3 font-medium text-foreground border-b border-border/40"
+              >
+                Gallery
+              </Link>
+              <Link
                 href="/contact"
-                onClick={() => setMobileOpen(false)}
+                onClick={() => {
+                  setMobileOpen(false);
+                }}
                 className="py-2.5 px-3 font-medium text-foreground border-b border-border/40"
               >
                 Contact
@@ -328,7 +410,9 @@ export function Navbar() {
 
               <Link
                 href="/apply"
-                onClick={() => setMobileOpen(false)}
+                onClick={() => {
+                  setMobileOpen(false);
+                }}
                 className="mt-3 bg-accent text-white font-bold py-3 rounded-xl text-center block"
               >
                 Apply Now

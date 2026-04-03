@@ -30,6 +30,17 @@ export function CTA() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
               size="lg"
+              onClick={(e) => {
+                e.preventDefault();
+
+                if (window.location.pathname !== "/") {
+                  window.location.href = "/#counseling";
+                } else {
+                  document.getElementById("counseling")?.scrollIntoView({
+                    behavior: "smooth",
+                  });
+                }
+              }}
               className="bg-primary text-white hover:bg-primary/90 text-lg px-10 py-6 rounded-full font-bold shadow-xl shadow-primary/20"
             >
               Get Free Consultation
