@@ -117,18 +117,39 @@ export default function Admission() {
   };
   const { mutate, isPending } = useMutation({
     mutationFn: (formData: any) => {
-      // This points to your future Node.js backend route
-      return axios.post(`${SERVER_URL}/api/user/admission`, formData);
+      return axios.post(`${SERVER_URL}/api/user/admission`, formData, {
+        headers: {
+          "Content-Type": "application/json", // if sending JSON
+        },
+      });
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log("Submission Success:", data);
       toast.success("Admission form submitted successfully!");
       setTimeout(() => {
         window.location.reload();
       }, 1000);
     },
-    onError: (error) => {
-      console.error("Submission Error:", error);
-      toast.error("Something went wrong!");
+    onError: (error: any) => {
+      // Check if it's an Axios error
+      if (axios.isAxiosError(error)) {
+        console.error("Axios Error Response:", error.response);
+        console.error("Axios Error Request:", error.request);
+        console.error("Axios Error Message:", error.message);
+
+        // Show detailed toast
+        if (error.response?.data?.error) {
+          toast.error(`Error: ${error.response.data.error}`);
+        } else if (error.response?.data?.message) {
+          toast.error(`Error: ${error.response.data.message}`);
+        } else {
+          toast.error(`Error: ${error.message}`);
+        }
+      } else {
+        // Non-Axios errors
+        console.error("Unknown Error:", error);
+        toast.error("Something went wrong!");
+      }
     },
   });
 
