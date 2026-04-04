@@ -12,8 +12,11 @@ import {
   Facebook,
   Instagram,
   Youtube,
+  Linkedin,
 } from "lucide-react";
 import { Link } from "wouter";
+
+import { FaWhatsapp } from "react-icons/fa";
 
 const INFO_ITEMS = [
   {
@@ -128,9 +131,9 @@ export default function ContactPage() {
                 <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-4">
                   Follow Us
                 </p>
-                <div className="flex gap-3">
+                <div className="flex flex-wrap gap-3">
                   <a
-                    href="https://facebook.com/globalvisa"
+                    href="https://www.facebook.com/visaaexpress"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-700 transition-colors"
@@ -138,7 +141,7 @@ export default function ContactPage() {
                     <Facebook className="w-4 h-4" /> Facebook
                   </a>
                   <a
-                    href="https://instagram.com/globalvisa"
+                    href="https://www.instagram.com/visa_express_bd/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 text-white rounded-xl text-sm font-semibold hover:opacity-90 transition-opacity"
@@ -146,12 +149,28 @@ export default function ContactPage() {
                     <Instagram className="w-4 h-4" /> Instagram
                   </a>
                   <a
-                    href="https://youtube.com/@globalvisa"
+                    href="https://www.youtube.com/@visa_express_bd"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-red-600 text-white rounded-xl text-sm font-semibold hover:bg-red-700 transition-colors"
                   >
                     <Youtube className="w-4 h-4" /> YouTube
+                  </a>
+                  <a
+                    href="https://wa.me/+8801718502964"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-green-500 text-white rounded-xl text-sm font-semibold hover:bg-green-600 transition-colors"
+                  >
+                    <FaWhatsapp className="w-4 h-4" /> WhatsApp
+                  </a>
+                  <a
+                    href="https://www.linkedin.com/company/visaexpress/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-red-600 text-white rounded-xl text-sm font-semibold hover:bg-red-700 transition-colors"
+                  >
+                    <Linkedin className="w-4 h-4" /> LinkedIn
                   </a>
                 </div>
               </div>
