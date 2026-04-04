@@ -26,9 +26,9 @@ function Login() {
     onSuccess: (data) => {
       // Handle successful login, e.g., store token, redirect, etc.
       if (data?.isAdmin) {
-        window.location.href = "/dashboard";
+        window.location.href = "/";
       } else {
-        window.location.href = "/admission";
+        window.location.href = "/";
       }
     },
     onError: (error) => {
