@@ -21,7 +21,7 @@ export function Testimonials() {
   if (!reviews.length) return null;
 
   return (
-    <section className="py-24 bg-secondary/50 relative overflow-hidden">
+    <section className="py-24 bg-secondary/50 relative ">
       <div
         className="absolute inset-0 opacity-50"
         style={{
@@ -68,8 +68,22 @@ export function Testimonials() {
         >
           {reviews.map((t, i) => (
             <SwiperSlide key={i}>
-              <div className="bg-white rounded-2xl p-6 shadow-lg h-full">
-                <Quote className="w-8 h-8 text-primary/20 mb-3" />
+              <div className="bg-white rounded-2xl p-6  h-[400px] border border-gray-200 flex flex-col ">
+                <div className=" flex items-center justify-between w-full">
+                  <Quote className="w-8 h-8 text-primary/20 mb-3" />
+                  <a
+                    href="https://search.google.com/local/writereview?placeid=ChIJWWCw8gKQ_zkRcUeGe7ptUr4"
+                    target="_blank"
+                  >
+                    <div className=" size-7">
+                      <img
+                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/250px-Google_%22G%22_logo.svg.png"
+                        alt="google"
+                        className=" w-full h-full object-contain"
+                      />
+                    </div>
+                  </a>
+                </div>
 
                 <div className="flex mb-3">
                   {[...Array(t.starRating)].map((_, s) => (
@@ -77,9 +91,11 @@ export function Testimonials() {
                   ))}
                 </div>
 
-                <p className="text-sm text-gray-600 mb-6 italic">
-                  "{t.comment}"
-                </p>
+                <div className=" flex-1">
+                  <p className="text-sm text-gray-600 text-justify italic">
+                    "{t.comment}"
+                  </p>
+                </div>
 
                 <div className="flex items-center gap-3">
                   <img
