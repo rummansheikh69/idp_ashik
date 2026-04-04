@@ -136,10 +136,10 @@ export default function Admission() {
     e.preventDefault();
 
     // Validate important fields if necessary
-    if (!photo) {
-      toast.error("Please capture a candidate photo");
-      return;
-    }
+    // if (!photo) {
+    //   toast.error("Please capture a candidate photo");
+    //   return;
+    // }
 
     // Construct the final payload
     const payload = {
