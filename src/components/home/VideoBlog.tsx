@@ -1,61 +1,48 @@
-import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  PlayCircle,
-  ChevronLeft,
-  ChevronRight,
-  Eye,
-  Clock,
-} from "lucide-react";
-import { VIDEOS } from "../../lib/data";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Navigation } from "swiper/modules";
+import { ChevronLeft, ChevronRight, PlayCircle } from "lucide-react";
+import { useRef } from "react";
 
-const VISIBLE = 3;
-const AUTOPLAY_MS = 5000;
+// Add your YouTube Video IDs here
+const VIDEO_BLOGS = [
+  {
+    id: "1",
+    title: "Study in Australia",
+    youtubeId: "v40VV5HMmhY", // Replace with actual ID
+    category: "Study Abroad",
+  },
+  {
+    id: "2",
+    title: "Top 10 Universities in Canada",
+    youtubeId: "dQw4w9WgXcQ",
+    category: "University",
+  },
+  {
+    id: "3",
+    title: "IELTS Speaking Tips & Tricks",
+    youtubeId: "dQw4w9WgXcQ",
+    category: "IELTS",
+  },
+  {
+    id: "4",
+    title: "Life as an International Student",
+    youtubeId: "dQw4w9WgXcQ",
+    category: "Lifestyle",
+  },
+];
 
 export function VideoBlog() {
-  const [startIdx, setStartIdx] = useState(0);
-  const [dir, setDir] = useState(1);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const N = VIDEOS.length;
-
-  const startAuto = () => {
-    if (timerRef.current) clearInterval(timerRef.current);
-    timerRef.current = setInterval(() => {
-      setDir(1);
-      setStartIdx((i) => (i + 1) % N);
-    }, AUTOPLAY_MS);
-  };
-
-  useEffect(() => {
-    startAuto();
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, []);
-
-  const go = (d: number) => {
-    if (timerRef.current) clearInterval(timerRef.current);
-    setDir(d);
-    setStartIdx((i) => (i + d + N) % N);
-    startAuto();
-  };
-
-  const cards = Array.from(
-    { length: VISIBLE },
-    (_, i) => VIDEOS[(startIdx + i) % N],
-  );
+  const swiperRef = useRef<any>(null);
 
   return (
-    <section
-      id="blog"
-      className="py-24 bg-foreground/[0.02] relative overflow-hidden"
-    >
+    <section className="py-24 bg-white relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Heading */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-14">
           <div>
-            <div className="inline-flex items-center bg-primary/8 px-4 py-2 rounded-full mb-5 border border-primary/12">
-              <span className="text-primary font-semibold text-sm uppercase tracking-widest">
+            <div className="inline-flex items-center bg-primary/10 px-4 py-2 rounded-full mb-5 border border-primary/10">
+              <PlayCircle className="w-4 h-4 text-primary mr-2" />
+              <span className="text-primary font-semibold text-xs uppercase tracking-widest">
                 Video Blog
               </span>
             </div>
@@ -69,108 +56,81 @@ export function VideoBlog() {
           </p>
         </div>
 
-        {/* Slider */}
-        <div className="flex items-center gap-4 md:gap-6">
+        {/* Swiper Container */}
+        <div className="relative group px-4">
+          {/* Custom Navigation Buttons */}
           <button
-            onClick={() => go(-1)}
-            className="shrink-0 w-11 h-11 rounded-full bg-primary flex items-center justify-center text-white shadow-lg hover:bg-primary/90 hover:scale-105 active:scale-95 transition-all"
-            aria-label="Previous"
+            onClick={() => swiperRef.current?.slidePrev()}
+            className="absolute -left-2 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-slate-800 border border-slate-900 flex items-center justify-center  shadow-xl  text-white transition-all duration-300 md:flex"
           >
-            <ChevronLeft className="w-5 h-5" />
+            <ChevronLeft className="w-6 h-6" />
           </button>
 
-          <div className="flex-1 overflow-hidden">
-            <AnimatePresence custom={dir} mode="wait">
-              <motion.div
-                key={startIdx}
-                custom={dir}
-                initial={(d: number) => ({
-                  x: d > 0 ? "40%" : "-40%",
-                  opacity: 0,
-                })}
-                animate={{ x: "0%", opacity: 1 }}
-                exit={(d: number) => ({
-                  x: d > 0 ? "-40%" : "40%",
-                  opacity: 0,
-                })}
-                transition={{ duration: 0.38, ease: "easeInOut" }}
-                className="grid grid-cols-1 md:grid-cols-3 gap-6"
-              >
-                {cards.map((video, ci) => (
-                  <a
-                    key={`${video.id}-${ci}`}
-                    href={`https://www.youtube.com/watch?v=${video.videoId}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group bg-white rounded-2xl overflow-hidden shadow-lg border border-border hover:shadow-xl hover:border-primary/30 transition-all duration-300 flex flex-col"
-                  >
-                    {/* Thumbnail */}
-                    <div className="relative aspect-video overflow-hidden bg-foreground/10">
-                      <img
-                        src={video.thumbnail}
-                        alt={video.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
-                      {/* Overlay */}
-                      <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors flex items-center justify-center">
-                        <PlayCircle className="w-14 h-14 text-white drop-shadow-xl group-hover:scale-110 transition-transform duration-300" />
-                      </div>
-                      {/* Duration badge */}
-                      <span className="absolute bottom-2.5 right-2.5 bg-black/80 text-white text-xs font-bold px-2 py-0.5 rounded">
-                        {video.duration}
-                      </span>
-                      {/* Category badge */}
-                      <span className="absolute top-3 left-3 bg-primary text-white text-xs font-semibold px-2.5 py-1 rounded-full">
+          <Swiper
+            modules={[Autoplay, Navigation]}
+            spaceBetween={24}
+            slidesPerView={3}
+            loop={true}
+            speed={800}
+            autoplay={{
+              delay: 3000,
+              disableOnInteraction: false,
+            }}
+            breakpoints={{
+              0: { slidesPerView: 1 },
+              640: { slidesPerView: 2 },
+              1024: { slidesPerView: 3 },
+            }}
+            onSwiper={(swiper) => (swiperRef.current = swiper)}
+            className="rounded-2xl"
+          >
+            {VIDEO_BLOGS.map((video) => (
+              <SwiperSlide key={video.id}>
+                <div className="bg-white rounded-2xl overflow-hidden border border-gray-200 h-full flex flex-col">
+                  {/* YouTube Embed Container */}
+                  <div className="relative aspect-video w-full bg-black">
+                    <iframe
+                      src={`https://www.youtube.com/embed/${video.youtubeId}`}
+                      title={video.title}
+                      className="absolute top-0 left-0 w-full h-full"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    ></iframe>
+                  </div>
+
+                  {/* Video Details */}
+                  <div className="p-5 flex-1 flex flex-col justify-between">
+                    <div>
+                      <span className="text-[10px] font-bold text-accent uppercase tracking-wider bg-accent/5 px-2 py-1 rounded">
                         {video.category}
                       </span>
-                    </div>
-
-                    {/* Card body */}
-                    <div className="p-5 flex flex-col flex-grow">
-                      <h3 className="font-display font-bold text-foreground text-sm leading-snug mb-3 group-hover:text-primary transition-colors line-clamp-2">
+                      <h3 className="mt-3 font-display font-bold text-lg text-primary leading-tight line-clamp-2">
                         {video.title}
                       </h3>
-                      <p className="text-xs text-muted-foreground font-semibold mb-4">
-                        {video.channel}
-                      </p>
-                      <div className="flex items-center gap-4 mt-auto text-xs text-muted-foreground">
-                        <span className="flex items-center gap-1">
-                          <Eye className="w-3.5 h-3.5" /> {video.views}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Clock className="w-3.5 h-3.5" /> {video.date}
-                        </span>
-                      </div>
                     </div>
-                  </a>
-                ))}
-              </motion.div>
-            </AnimatePresence>
-          </div>
+                    <button
+                      onClick={() =>
+                        window.open(
+                          `https://www.youtube.com/watch?v=${video.youtubeId}`,
+                          "_blank",
+                        )
+                      }
+                      className="mt-4 text-xs font-bold text-primary hover:text-accent transition-colors flex items-center gap-1"
+                    >
+                      WATCH ON YOUTUBE <ChevronRight className="w-3 h-3" />
+                    </button>
+                  </div>
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
 
           <button
-            onClick={() => go(1)}
-            className="shrink-0 w-11 h-11 rounded-full bg-primary flex items-center justify-center text-white shadow-lg hover:bg-primary/90 hover:scale-105 active:scale-95 transition-all"
-            aria-label="Next"
+            onClick={() => swiperRef.current?.slideNext()}
+            className="absolute -right-2 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-slate-800 border border-slate-900 flex items-center justify-center  shadow-xl  text-white transition-all duration-300 md:flex"
           >
-            <ChevronRight className="w-5 h-5" />
+            <ChevronRight className="w-6 h-6" />
           </button>
-        </div>
-
-        {/* Dots */}
-        <div className="flex justify-center gap-2 mt-8">
-          {VIDEOS.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => {
-                setDir(i > startIdx ? 1 : -1);
-                setStartIdx(i);
-                startAuto();
-              }}
-              className={`rounded-full transition-all duration-300 ${i === startIdx ? "w-7 h-2.5 bg-primary" : "w-2.5 h-2.5 bg-primary/20 hover:bg-primary/40"}`}
-              aria-label={`Video ${i + 1}`}
-            />
-          ))}
         </div>
       </div>
     </section>

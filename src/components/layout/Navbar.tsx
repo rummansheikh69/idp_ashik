@@ -34,11 +34,19 @@ export function Navbar() {
             <div
               className={`${isScrolled || location !== "/" ? "w-12" : "w-20"} transition-all duration-300`}
             >
-              <img
-                src="/logo.png"
-                alt="logo"
-                className=" w-full h-full object-contain"
-              />
+              {isScrolled ? (
+                <img
+                  src="/logo.png"
+                  alt="logo"
+                  className=" w-full h-full object-contain"
+                />
+              ) : (
+                <img
+                  src="/white-logo.png"
+                  alt="logo"
+                  className=" w-full h-full object-contain"
+                />
+              )}
             </div>
           </Link>
 

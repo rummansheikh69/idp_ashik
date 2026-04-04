@@ -55,7 +55,7 @@ export default function DirectorPage() {
               <div className="shrink-0 relative">
                 <div className="w-44 h-44 md:w-52 md:h-52 rounded-3xl overflow-hidden border-4 border-white shadow-2xl">
                   <img
-                    src="https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=500&auto=format&fit=crop"
+                    src="/director.jpeg"
                     alt="Director"
                     className="w-full h-full object-cover object-top"
                   />
@@ -72,10 +72,10 @@ export default function DirectorPage() {
                   Director's Message
                 </div>
                 <h1 className="text-3xl md:text-4xl font-display font-bold text-white drop-shadow-md">
-                  Rashid Al-Hassan
+                  Ashik Rahman
                 </h1>
                 <p className="text-white/80 text-base mt-1">
-                  Founder & Director — GlobalVisa Center
+                  Founder & Director — Visa Express
                 </p>
               </div>
             </div>
@@ -104,17 +104,17 @@ export default function DirectorPage() {
                   <div className="mt-10 pt-8 border-t border-border flex items-center gap-4">
                     <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-primary/20">
                       <img
-                        src="https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=200&auto=format&fit=crop"
+                        src="/director.jpeg"
                         alt="Director signature"
                         className="w-full h-full object-cover object-top"
                       />
                     </div>
                     <div>
                       <p className="font-display font-bold text-primary">
-                        Rashid Al-Hassan
+                        Ashik Rahman
                       </p>
                       <p className="text-sm text-muted-foreground">
-                        Founder & Director, GlobalVisa Center
+                        Founder & Director, Visa Express
                       </p>
                     </div>
                   </div>
@@ -159,7 +159,7 @@ export default function DirectorPage() {
                     href="mailto:director@globalvisa.com"
                     className="block mt-2 text-center text-white/60 text-xs hover:text-white transition-colors"
                   >
-                    director@globalvisa.com
+                    director@visaexpressbd.com
                   </a>
                 </div>
               </div>

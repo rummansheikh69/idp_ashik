@@ -280,7 +280,7 @@ export function Footer() {
               Webmail
             </a>
             <Link
-              href="/addmission"
+              href="/admission"
               className="text-white/50 hover:text-white text-sm"
             >
               Go

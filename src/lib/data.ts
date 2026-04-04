@@ -19,6 +19,8 @@ import {
   TicketCheck,
 } from "lucide-react";
 
+export const SERVER_URL = "http://localhost:4000";
+
 export const SERVICES = [
   {
     id: "eligibility-check",
