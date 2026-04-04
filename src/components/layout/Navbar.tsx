@@ -34,7 +34,7 @@ export function Navbar() {
             <div
               className={`${isScrolled || location !== "/" ? "w-12" : "w-20"} transition-all duration-300`}
             >
-              {isScrolled ? (
+              {isScrolled || location !== "/" ? (
                 <img
                   src="/logo.png"
                   alt="logo"
