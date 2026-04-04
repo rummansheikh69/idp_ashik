@@ -18,10 +18,9 @@ import emailjs from "@emailjs/browser";
 import { Footer } from "../components/layout/Footer";
 import { Navbar } from "../components/layout/Navbar";
 import toast from "react-hot-toast";
+import { SERVER_URL } from "../lib/data";
 
 export default function Admission() {
-  const SERVER_URL = "http://192.168.0.107:4000";
-
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
