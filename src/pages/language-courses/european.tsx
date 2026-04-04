@@ -227,7 +227,7 @@ const COUNTRIES = [
 
 export default function EuropeanCountriesPage() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen w-full relative">
       <Navbar />
       <main className="pt-20">
         <div className="bg-primary text-white py-16 px-4 text-center relative overflow-hidden">
