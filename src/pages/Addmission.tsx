@@ -20,7 +20,7 @@ import { Navbar } from "../components/layout/Navbar";
 import toast from "react-hot-toast";
 
 export default function Admission() {
-  const SERVER_URL = "http://localhost:4000";
+  const SERVER_URL = "http://192.168.0.107:4000";
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
