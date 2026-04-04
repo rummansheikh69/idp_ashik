@@ -70,6 +70,7 @@ export default function Admission() {
     payDate3: "",
     payTaka3: "",
     memoNo: "",
+    branchName: "",
     paymentType: "",
     receivedBy: "",
     admissionOfficer: "",
@@ -623,7 +624,7 @@ export default function Admission() {
               </div>
 
               {/* Row 4: Admin Info */}
-              <div className="grid grid-cols-1 md:grid-cols-3 border-b border-slate-900">
+              <div className="grid grid-cols-1 md:grid-cols-4 border-b border-slate-900">
                 <div className="p-2 border-r border-slate-900 flex items-center">
                   <label className="text-[12px] font-bold w-20 uppercase">
                     Memo No:
@@ -631,6 +632,16 @@ export default function Admission() {
                   <input
                     type="text"
                     onChange={set("memoNo")}
+                    className="flex-1 outline-none text-sm"
+                  />
+                </div>
+                <div className="p-2 border-r border-slate-900 flex items-center">
+                  <label className="text-[12px] font-bold w-20 uppercase">
+                    Branch Name:
+                  </label>
+                  <input
+                    type="text"
+                    onChange={set("branchName")}
                     className="flex-1 outline-none text-sm"
                   />
                 </div>
