@@ -5,11 +5,11 @@ export function HowItWorks() {
   return (
     <section
       id="process"
-      className="py-24 bg-secondary/40 relative overflow-hidden"
+      className="py-24 bg-[linear-gradient(to_top,#7e1810,#312a74)] relative overflow-hidden"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-display font-bold text-foreground underline decoration-primary decoration-4 underline-offset-8">
+          <h2 className="text-4xl md:text-5xl font-display font-bold text-white underline decoration-white decoration-4 underline-offset-8">
             How We Work
           </h2>
         </div>
@@ -20,7 +20,7 @@ export function HowItWorks() {
         </div>
 
         {/* Mobile: vertical list */}
-        <div className="lg:hidden space-y-6">
+        <div className="lg:hidden space-y-6 ">
           {STEPS.map((step, i) => (
             <motion.div
               key={step.id}
@@ -34,13 +34,13 @@ export function HowItWorks() {
                 <step.icon className="w-6 h-6 text-white" />
               </div>
               <div>
-                <p className="text-xs font-bold text-primary uppercase tracking-widest mb-1">
+                <p className="text-xs font-bold text-white uppercase tracking-widest mb-1">
                   {step.label}
                 </p>
-                <h3 className="font-display font-bold text-foreground text-lg mb-1">
+                <h3 className="font-display font-bold text-white text-lg mb-1">
                   {step.title}
                 </h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">
+                <p className="text-white text-sm leading-relaxed">
                   {step.desc}
                 </p>
               </div>
@@ -160,11 +160,11 @@ function WaveSteps() {
               <div className="text-center mb-3 absolute bottom-[calc(100%+8px)] left-1/2 -translate-x-1/2 w-44">
                 <p
                   className="font-display font-bold text-sm mb-0.5"
-                  style={{ color }}
+                  style={{ color: "white" }}
                 >
                   {step.label}
                 </p>
-                <p className="text-foreground font-semibold text-sm leading-tight">
+                <p className="text-white font-semibold text-sm leading-tight">
                   {step.title}
                 </p>
               </div>
@@ -188,11 +188,11 @@ function WaveSteps() {
               <div className="text-center mt-3 absolute top-[calc(100%+8px)] left-1/2 -translate-x-1/2 w-44">
                 <p
                   className="font-display font-bold text-sm mb-0.5"
-                  style={{ color }}
+                  style={{ color: "white" }}
                 >
                   {step.label}
                 </p>
-                <p className="text-foreground font-semibold text-sm leading-tight">
+                <p className="text-white font-semibold text-sm leading-tight">
                   {step.title}
                 </p>
               </div>
