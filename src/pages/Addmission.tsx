@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 import {
   Camera,
   X,
@@ -9,12 +11,17 @@ import {
   User2,
   BookOpen,
   FlipHorizontal,
+  Loader,
+  Upload,
 } from "lucide-react";
 import emailjs from "@emailjs/browser";
 import { Footer } from "../components/layout/Footer";
 import { Navbar } from "../components/layout/Navbar";
+import toast from "react-hot-toast";
 
 export default function Admission() {
+  const SERVER_URL = "http://localhost:4000";
+
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -22,8 +29,8 @@ export default function Admission() {
   const [photo, setPhoto] = useState<string | null>(null);
   const [cameraOpen, setCameraOpen] = useState(false);
   const [facingMode, setFacingMode] = useState<"user" | "environment">("user");
-  const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
+  const [documentBase64, setDocumentBase64] = useState<string | null>(null);
+  const [fileName, setFileName] = useState<string>("");
 
   // Updated state to match the image fields
   const [form, setForm] = useState({
@@ -31,20 +38,119 @@ export default function Admission() {
     fullName: "",
     dob: "",
     contact: "",
-    familyContact: "",
+    family_contact: "",
     address: "",
     // Educational
     inst1: "",
     level1: "",
     dept1: "",
     gpa1: "",
+    scale1: "",
     year1: "",
+
+    inst2: "",
+    level2: "",
+    dept2: "",
+    gpa2: "",
+    scale2: "",
+    year2: "",
     // Course
     courseName: "",
+    noOfService: "",
     startingDate: "",
     regularFee: "",
-    email: "",
+    discount: "",
+    subAgentFee: "",
+    balanceFee: "",
+    // Payment
+    payDate1: "",
+    payTaka1: "",
+    payDate2: "",
+    payTaka2: "",
+    payDate3: "",
+    payTaka3: "",
+    memoNo: "",
+    paymentType: "",
+    receivedBy: "",
+    admissionOfficer: "",
+    subAgentName: "",
+
+    //ielts
+    surname: "",
+    givenName: "",
+    testDate: "",
+    testLocation: "",
+    testType: "",
+    registrationDate: "",
+    amount: "",
+    providerName: "",
+    passportNo: "",
+    passportIssueDate: "",
+    passportExpiryDate: "",
+    emailId: "",
+    password: "",
   });
+
+  const [file, setFile] = useState<File | null>(null);
+
+  // Handler for the Document Upload (Supporting files)
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+    if (!selectedFile) return;
+
+    // 1. Set the file object for the UI (to show the name)
+    setFile(selectedFile);
+
+    // 2. Convert to Base64 for the backend
+    const reader = new FileReader();
+    reader.readAsDataURL(selectedFile);
+    reader.onload = () => {
+      setDocumentBase64(reader.result as string);
+      setFileName(selectedFile.name);
+    };
+  };
+
+  // In your handleSubmit, clear the Base64 too if they remove it
+  const removeFile = () => {
+    setFile(null);
+    setDocumentBase64(null);
+  };
+  const { mutate, isPending } = useMutation({
+    mutationFn: (formData: any) => {
+      // This points to your future Node.js backend route
+      return axios.post(`${SERVER_URL}/api/user/admission`, formData);
+    },
+    onSuccess: () => {
+      toast.success("Admission form submitted successfully!");
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    },
+    onError: (error) => {
+      console.error("Submission Error:", error);
+      toast.error("Something went wrong!");
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Validate important fields if necessary
+    if (!photo) {
+      toast.error("Please capture a candidate photo");
+      return;
+    }
+
+    // Construct the final payload
+    const payload = {
+      ...form,
+      photo: photo, // Candidate Photo (Base64)
+      document: documentBase64, // Supporting Doc (Base64)
+      documentName: fileName, // Useful for the backend
+    };
+
+    mutate(payload);
+  };
 
   const stopCamera = () => {
     streamRef.current?.getTracks().forEach((t) => t.stop());
@@ -143,7 +249,7 @@ export default function Admission() {
             </div>
           </div>
 
-          <form className="p-8 space-y-6">
+          <form onSubmit={handleSubmit} className="p-8 space-y-6">
             {/* Section: Personal Info */}
             <div className="border border-slate-900">
               <div className="bg-slate-100 p-2 text-center font-bold border-b border-slate-900">
@@ -264,6 +370,7 @@ export default function Admission() {
                   <input
                     type="text"
                     className="w-1/4 text-sm outline-none"
+                    onChange={set("scale1")}
                     placeholder="5"
                   />
                 </div>
@@ -314,6 +421,7 @@ export default function Admission() {
                   <input
                     type="text"
                     className="w-1/4 text-sm outline-none"
+                    onChange={set("scale2")}
                     placeholder="4"
                   />
                 </div>
@@ -352,7 +460,7 @@ export default function Admission() {
                   </label>
                   <input
                     type="number"
-                    defaultValue="1"
+                    onChange={set("noOfService")}
                     className="w-full outline-none text-sm"
                   />
                 </div>
@@ -388,6 +496,7 @@ export default function Admission() {
                   <input
                     type="text"
                     placeholder="0%"
+                    onChange={set("discount")}
                     className="w-full outline-none text-sm"
                   />
                 </div>
@@ -395,7 +504,11 @@ export default function Admission() {
                   <label className="text-[12px] font-bold w-24 uppercase">
                     Sub Agent Fee:
                   </label>
-                  <input type="text" className="w-full outline-none text-sm" />
+                  <input
+                    type="text"
+                    onChange={set("subAgentFee")}
+                    className="w-full outline-none text-sm"
+                  />
                 </div>
                 <div className="p-2 flex items-center">
                   <label className="text-[12px] font-bold w-24 uppercase">
@@ -403,6 +516,7 @@ export default function Admission() {
                   </label>
                   <input
                     type="text"
+                    onChange={set("balanceFee")}
                     className="w-full outline-none text-sm font-bold text-red-600"
                   />
                 </div>
@@ -419,6 +533,7 @@ export default function Admission() {
                     </div>
                     <input
                       type="date"
+                      onChange={set("payDate1")}
                       className="w-full outline-none text-xs"
                     />
                   </div>
@@ -428,6 +543,7 @@ export default function Admission() {
                     </label>
                     <input
                       type="text"
+                      onChange={set("payTaka1")}
                       className="w-full outline-none text-sm font-bold text-red-600"
                     />
                   </div>
@@ -442,6 +558,7 @@ export default function Admission() {
                     </div>
                     <input
                       type="date"
+                      onChange={set("payDate2")}
                       className="w-full outline-none text-xs"
                     />
                   </div>
@@ -452,6 +569,7 @@ export default function Admission() {
                     </label>
                     <input
                       type="text"
+                      onChange={set("payTaka2")}
                       className="w-full outline-none text-sm font-bold text-red-600"
                     />
                   </div>
@@ -466,6 +584,7 @@ export default function Admission() {
                     </div>
                     <input
                       type="date"
+                      onChange={set("payDate3")}
                       className="w-full outline-none text-xs"
                     />
                   </div>
@@ -475,6 +594,7 @@ export default function Admission() {
                     </label>
                     <input
                       type="text"
+                      onChange={set("payTaka3")}
                       className="w-full outline-none text-sm font-bold text-red-600"
                     />
                   </div>
@@ -487,23 +607,31 @@ export default function Admission() {
                   <label className="text-[12px] font-bold w-20 uppercase">
                     Memo No:
                   </label>
-                  <input type="text" className="flex-1 outline-none text-sm" />
+                  <input
+                    type="text"
+                    onChange={set("memoNo")}
+                    className="flex-1 outline-none text-sm"
+                  />
                 </div>
                 <div className="p-2 border-r border-slate-900 flex items-center">
                   <label className="text-[12px] font-bold w-28 uppercase">
                     Type Of Payment:
                   </label>
-                  <select className="flex-1 outline-none text-sm bg-transparent">
-                    <option>Cash</option>
-                    <option>Bank Transfer</option>
-                    <option>Mobile Banking</option>
-                  </select>
+                  <input
+                    type="text"
+                    onChange={set("paymentType")}
+                    className="flex-1 outline-none text-sm"
+                  />
                 </div>
                 <div className="p-2 flex items-center">
                   <label className="text-[12px] font-bold w-32 uppercase">
                     Payment Received By:
                   </label>
-                  <input type="text" className="flex-1 outline-none text-sm" />
+                  <input
+                    type="text"
+                    onChange={set("receivedBy")}
+                    className="flex-1 outline-none text-sm"
+                  />
                 </div>
               </div>
 
@@ -513,13 +641,21 @@ export default function Admission() {
                   <label className="text-[12px] font-bold w-max pr-2 uppercase">
                     Admissions Officer:
                   </label>
-                  <input type="text" className="flex-1 outline-none text-sm" />
+                  <input
+                    type="text"
+                    onChange={set("admissionOfficer")}
+                    className="flex-1 outline-none text-sm"
+                  />
                 </div>
                 <div className="p-2 flex items-center">
                   <label className="text-[12px] font-bold w-max pr-2 uppercase">
                     Sub Agent Name:
                   </label>
-                  <input type="text" className="flex-1 outline-none text-sm" />
+                  <input
+                    type="text"
+                    onChange={set("subAgentName")}
+                    className="flex-1 outline-none text-sm"
+                  />
                 </div>
               </div>
             </div>
@@ -630,13 +766,21 @@ export default function Admission() {
                   <label className="text-[10px] font-bold block">
                     ISSUE DATE:
                   </label>
-                  <input type="date" className="w-full outline-none text-sm" />
+                  <input
+                    type="date"
+                    onChange={set("passportIssueDate")}
+                    className="w-full outline-none text-sm"
+                  />
                 </div>
                 <div className="p-2">
                   <label className="text-[10px] font-bold block">
                     EXPIRY DATE:
                   </label>
-                  <input type="date" className="w-full outline-none text-sm" />
+                  <input
+                    type="date"
+                    onChange={set("passportExpiryDate")}
+                    className="w-full outline-none text-sm"
+                  />
                 </div>
               </div>
 
@@ -664,8 +808,60 @@ export default function Admission() {
               </div>
             </div>
 
-            <button className="w-full bg-slate-900 text-white py-4 font-bold hover:bg-slate-800 transition-all flex items-center justify-center gap-2">
-              <Send size={18} /> SUBMIT REGISTRATION
+            {/* Section: Documents (Passport/Certificates) */}
+            <div className="border border-slate-900 mt-6">
+              <div className="bg-slate-100 p-2 text-center font-bold border-b border-slate-900 uppercase text-sm tracking-wide">
+                Documents (Passport/Certificates)
+              </div>
+
+              <div className="p-6 bg-white flex flex-col items-center">
+                <label
+                  htmlFor="file-upload"
+                  className="w-full max-w-md cursor-pointer group"
+                >
+                  <div className="flex flex-col items-center justify-center border-2 border-dashed border-slate-300 rounded-lg p-6 group-hover:border-slate-900 group-hover:bg-slate-50 transition-all">
+                    <div className="p-3 bg-slate-100 rounded-full group-hover:bg-slate-900 group-hover:text-white transition-colors">
+                      {/* Ensure you have 'Upload' imported from 'lucide-react' or your icon library */}
+                      <Upload size={24} />
+                    </div>
+                    <p className="mt-3 text-sm font-bold text-slate-700 uppercase tracking-tight">
+                      {file ? file.name : "Click to upload document"}
+                    </p>
+                    <p className="text-[10px] text-slate-500 mt-1 uppercase">
+                      PDF, EXCEL, or PNG (Max 5MB)
+                    </p>
+                  </div>
+                  <input
+                    id="file-upload"
+                    type="file"
+                    className="hidden"
+                    onChange={handleFileChange}
+                  />
+                </label>
+
+                {file && (
+                  <button
+                    type="button"
+                    onClick={removeFile}
+                    className="mt-2 text-[10px] font-bold text-red-600 hover:underline uppercase"
+                  >
+                    Remove File
+                  </button>
+                )}
+              </div>
+            </div>
+
+            <button
+              disabled={isPending}
+              className="w-full bg-slate-900 text-white h-14 cursor-pointer font-bold hover:bg-slate-800 transition-all flex items-center justify-center gap-2"
+            >
+              {isPending ? (
+                <Loader size={16} className="animate-spin" />
+              ) : (
+                <div className=" flex items-center gap-2">
+                  <Send size={18} /> SUBMIT REGISTRATION
+                </div>
+              )}
             </button>
           </form>
         </div>

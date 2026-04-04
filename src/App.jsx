@@ -18,7 +18,7 @@ import ScrollToHash from "./components/home/ScrollToHash";
 import Ielts from "./pages/Ielts";
 import Pte from "./pages/Pte";
 import Gallery from "./pages/Gallery";
-
+import { Toaster as Toasters } from "react-hot-toast";
 import "swiper/css";
 import "swiper/css/navigation";
 import Addmission from "./pages/Addmission";
@@ -68,6 +68,7 @@ function App() {
           <Router />
         </WouterRouter>
         <Toaster />
+        <Toasters position="bottom-center" reverseOrder={false} />
       </TooltipProvider>
     </QueryClientProvider>
   );
