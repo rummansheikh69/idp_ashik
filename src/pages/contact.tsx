@@ -27,18 +27,18 @@ const INFO_ITEMS = [
   {
     icon: Phone,
     label: "Call Us",
-    value: "+880 421-60000 · +880 1711-000111",
+    value: "+8801718502964 · +8801312010208",
   },
   {
     icon: Mail,
     label: "Email Us",
-    value: "info@globalvisa.com",
-    href: "mailto:info@globalvisa.com",
+    value: "khulna@visaexpressbd.com",
+    href: "mailto:khulna@visaexpressbd.com",
   },
   {
     icon: Clock,
     label: "Working Hours",
-    value: "Saturday – Thursday: 9:00 AM – 6:00 PM",
+    value: "10:00 AM – 7:00 PM",
   },
 ];
 
@@ -168,7 +168,7 @@ export default function ContactPage() {
                     href="https://www.linkedin.com/company/visaexpress/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-red-600 text-white rounded-xl text-sm font-semibold hover:bg-red-700 transition-colors"
+                    className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-red-700 transition-colors"
                   >
                     <Linkedin className="w-4 h-4" /> LinkedIn
                   </a>

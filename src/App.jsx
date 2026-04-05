@@ -29,6 +29,7 @@ import Addmission from "./pages/Addmission";
 import { SERVER_URL } from "./lib/data";
 import { Loader2 } from "lucide-react";
 import Login from "./pages/admin/Login";
+import AdminDashboard from "./pages/admin/Dashboard";
 
 function App() {
   useEffect(() => {
@@ -85,6 +86,13 @@ function App() {
             path="/admission"
             component={() =>
               authUser ? <Addmission /> : <Redirect to="/login" />
+            }
+          />
+
+          <Route
+            path="/dashboard"
+            component={() =>
+              authUser ? <AdminDashboard /> : <Redirect to="/login" />
             }
           />
           <Route path="/about/director" component={DirectorPage} />

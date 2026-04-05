@@ -25,6 +25,7 @@ import {
   Camera,
   RotateCcw,
 } from "lucide-react";
+import { Navbar } from "../../components/layout/Navbar";
 
 // ── Types ────────────────────────────────────────────────────────────
 interface User {
@@ -102,6 +103,7 @@ function UsersTab() {
   const [sortField, setSortField] = useState<"appliedAt" | "fullName">(
     "appliedAt",
   );
+  const [showPassword, setShowPassword] = useState<string | null>(null);
   const [sortAsc, setSortAsc] = useState(false);
 
   const refresh = () => setUsers(getUsers());
@@ -142,13 +144,6 @@ function UsersTab() {
     setUsers(updated);
     setConfirmDelete(null);
     setSelected(null);
-  };
-
-  const stats = {
-    total: users.length,
-    pending: users.filter((u) => u.status === "pending").length,
-    enrolled: users.filter((u) => u.status === "enrolled").length,
-    completed: users.filter((u) => u.status === "completed").length,
   };
 
   const toggleSort = (f: typeof sortField) => {
@@ -209,53 +204,6 @@ function UsersTab() {
 
   return (
     <div>
-      {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        {[
-          {
-            label: "Total Applications",
-            val: stats.total,
-            icon: Users,
-            color: "text-blue-600",
-            bg: "bg-blue-50",
-          },
-          {
-            label: "Pending Review",
-            val: stats.pending,
-            icon: Clock,
-            color: "text-amber-600",
-            bg: "bg-amber-50",
-          },
-          {
-            label: "Currently Enrolled",
-            val: stats.enrolled,
-            icon: BookOpen,
-            color: "text-primary",
-            bg: "bg-primary/10",
-          },
-          {
-            label: "Completed",
-            val: stats.completed,
-            icon: GraduationCap,
-            color: "text-green-600",
-            bg: "bg-green-50",
-          },
-        ].map((s) => (
-          <div
-            key={s.label}
-            className={`${s.bg} rounded-xl p-5 flex items-center gap-4`}
-          >
-            <div className={`${s.color}`}>
-              <s.icon size={28} />
-            </div>
-            <div>
-              <div className={`text-2xl font-black ${s.color}`}>{s.val}</div>
-              <div className="text-xs text-muted-foreground">{s.label}</div>
-            </div>
-          </div>
-        ))}
-      </div>
-
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3 mb-4">
         <div className="relative flex-1">
@@ -266,22 +214,10 @@ function UsersTab() {
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by name, email or course..."
+            placeholder="Search by name or email..."
             className="w-full pl-9 pr-4 py-2.5 border border-border rounded-sm text-sm focus:outline-none focus:border-primary"
           />
         </div>
-        <select
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-          className="border border-border rounded-sm px-4 py-2.5 text-sm focus:outline-none focus:border-primary bg-white"
-        >
-          <option value="all">All Statuses</option>
-          {Object.entries(statusConfig).map(([k, v]) => (
-            <option key={k} value={k}>
-              {v.label}
-            </option>
-          ))}
-        </select>
       </div>
 
       {/* Table */}
@@ -290,9 +226,6 @@ function UsersTab() {
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-secondary/40 border-b border-border">
-                <th className="px-4 py-3 text-left font-semibold text-muted-foreground">
-                  Photo
-                </th>
                 <th
                   className="px-4 py-3 text-left cursor-pointer"
                   onClick={() => toggleSort("fullName")}
@@ -302,22 +235,12 @@ function UsersTab() {
                   </span>
                 </th>
                 <th className="px-4 py-3 text-left font-semibold text-muted-foreground">
-                  Course
+                  Email
                 </th>
                 <th className="px-4 py-3 text-left font-semibold text-muted-foreground">
-                  Band
+                  Password
                 </th>
-                <th
-                  className="px-4 py-3 text-left cursor-pointer"
-                  onClick={() => toggleSort("appliedAt")}
-                >
-                  <span className="flex items-center gap-1 font-semibold text-muted-foreground">
-                    Applied <ArrowUpDown size={13} />
-                  </span>
-                </th>
-                <th className="px-4 py-3 text-left font-semibold text-muted-foreground">
-                  Status
-                </th>
+
                 <th className="px-4 py-3 text-left font-semibold text-muted-foreground">
                   Actions
                 </th>
@@ -342,59 +265,29 @@ function UsersTab() {
                       className={`border-b border-border/50 hover:bg-secondary/20 transition-colors ${i % 2 === 0 ? "" : "bg-secondary/10"}`}
                     >
                       <td className="px-4 py-3">
-                        {u.photo ? (
-                          <img
-                            src={u.photo}
-                            alt={u.fullName}
-                            className="w-10 h-10 rounded-full object-cover border-2 border-border"
-                          />
-                        ) : (
-                          <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-muted-foreground text-xs font-bold">
-                            {(u.fullName || "?")[0]}
-                          </div>
-                        )}
-                      </td>
-                      <td className="px-4 py-3">
                         <div className="font-semibold text-foreground">
                           {u.fullName}
                         </div>
-                        <div className="text-xs text-muted-foreground">
-                          {u.email}
-                        </div>
                       </td>
                       <td className="px-4 py-3 text-foreground/70">
-                        {u.course}
+                        {u.email}
                       </td>
                       <td className="px-4 py-3">
-                        <span className="text-xs text-muted-foreground">
-                          {u.currentBand || "–"}
+                        <span className="text-muted-foreground italic">
+                          {showPassword === u.id ? "password123" : "••••••••"}
                         </span>
-                        <span className="mx-1 text-muted-foreground">→</span>
-                        <span className="font-bold text-primary">
-                          {u.targetBand}
-                        </span>
+                        <Eye
+                          size={16}
+                          className="inline-block ml-2 text-muted-foreground hover:text-primary cursor-pointer"
+                          title="Show password"
+                          onClick={() =>
+                            setShowPassword(showPassword === u.id ? null : u.id)
+                          }
+                        />
                       </td>
-                      <td className="px-4 py-3 text-xs text-muted-foreground">
-                        {u.appliedAt
-                          ? new Date(u.appliedAt).toLocaleDateString()
-                          : "–"}
-                      </td>
-                      <td className="px-4 py-3">
-                        <span
-                          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${sc.color}`}
-                        >
-                          <sc.icon size={12} /> {sc.label}
-                        </span>
-                      </td>
+
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => openUser(u)}
-                            className="w-8 h-8 flex items-center justify-center rounded-md hover:bg-blue-50 text-blue-600 transition-colors"
-                            title="View/Edit"
-                          >
-                            <Eye size={15} />
-                          </button>
                           <button
                             onClick={() => setConfirmDelete(u.id)}
                             className="w-8 h-8 flex items-center justify-center rounded-md hover:bg-red-50 text-red-500 transition-colors"
@@ -412,153 +305,6 @@ function UsersTab() {
           </table>
         </div>
       </div>
-
-      {/* User detail modal */}
-      <AnimatePresence>
-        {selected && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4"
-            onClick={() => setSelected(null)}
-          >
-            <motion.div
-              initial={{ scale: 0.95 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.95 }}
-              onClick={(e) => e.stopPropagation()}
-              className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl"
-            >
-              <div className="flex items-start justify-between p-6 border-b border-border">
-                <div className="flex items-center gap-4">
-                  {selected.photo ? (
-                    <img
-                      src={selected.photo}
-                      alt={selected.fullName}
-                      className="w-16 h-16 rounded-full object-cover border-2 border-primary"
-                    />
-                  ) : (
-                    <div className="w-16 h-16 rounded-full bg-secondary flex items-center justify-center text-2xl font-black text-muted-foreground">
-                      {(selected.fullName || "?")[0]}
-                    </div>
-                  )}
-                  <div>
-                    <h2 className="text-xl font-black text-foreground">
-                      {selected.fullName}
-                    </h2>
-                    <p className="text-muted-foreground text-sm">
-                      {selected.email} · {selected.phone}
-                    </p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => setSelected(null)}
-                  className="text-muted-foreground hover:text-foreground"
-                >
-                  <X size={20} />
-                </button>
-              </div>
-              <div className="p-6 space-y-5">
-                {/* Info grid */}
-                {[
-                  ["Father's Name", selected.fatherName],
-                  ["Date of Birth", selected.dob],
-                  ["Nationality", selected.nationality],
-                  ["WhatsApp", selected.whatsapp || "—"],
-                  ["Address", selected.address || "—"],
-                  ["Course", selected.course],
-                  ["Current Band", selected.currentBand || "None"],
-                  ["Target Band", selected.targetBand],
-                ].reduce((rows: React.ReactNode[], [k, v], i) => {
-                  if (i % 2 === 0)
-                    rows.push(
-                      <div key={i} className="grid grid-cols-2 gap-4">
-                        <div>
-                          <span className="text-xs text-muted-foreground">
-                            {k}
-                          </span>
-                          <div className="font-semibold text-foreground">
-                            {v as string}
-                          </div>
-                        </div>
-                      </div>,
-                    );
-                  else {
-                    const last = rows[rows.length - 1] as React.ReactElement;
-                    rows[rows.length - 1] = (
-                      <div key={i} className="grid grid-cols-2 gap-4">
-                        {last.props.children}
-                        <div>
-                          <span className="text-xs text-muted-foreground">
-                            {k}
-                          </span>
-                          <div className="font-semibold text-foreground">
-                            {v as string}
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  }
-                  return rows;
-                }, [])}
-
-                {selected.message && (
-                  <div className="bg-secondary/40 rounded-lg p-4 text-sm text-foreground/70 italic">
-                    "{selected.message}"
-                  </div>
-                )}
-
-                {/* Edit status */}
-                <div className="border-t pt-5">
-                  <label className="block text-sm font-semibold text-foreground mb-2">
-                    Status
-                  </label>
-                  <select
-                    value={editStatus}
-                    onChange={(e) =>
-                      setEditStatus(e.target.value as User["status"])
-                    }
-                    className="w-full border border-border rounded-sm px-3 py-2 text-sm focus:outline-none focus:border-primary"
-                  >
-                    {Object.entries(statusConfig).map(([k, v]) => (
-                      <option key={k} value={k}>
-                        {v.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-foreground mb-2">
-                    Admin Notes
-                  </label>
-                  <textarea
-                    rows={3}
-                    value={editNotes}
-                    onChange={(e) => setEditNotes(e.target.value)}
-                    placeholder="Internal notes about this student..."
-                    className="w-full border border-border rounded-sm px-3 py-2 text-sm focus:outline-none focus:border-primary resize-none"
-                  />
-                </div>
-                <div className="flex gap-3">
-                  <button
-                    onClick={saveUser}
-                    className="flex-1 bg-primary text-white font-bold py-2.5 hover:bg-primary/90 transition-colors rounded-sm"
-                  >
-                    Save Changes
-                  </button>
-                  <button
-                    onClick={() => setConfirmDelete(selected.id)}
-                    className="px-5 border border-red-300 text-red-500 font-semibold py-2.5 hover:bg-red-50 transition-colors rounded-sm"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* Confirm delete */}
       <AnimatePresence>
@@ -1122,57 +868,21 @@ function BannersTab() {
 
 // ── Main Dashboard ───────────────────────────────────────────────────
 export default function AdminDashboard() {
-  const [authed, setAuthed] = useState(
-    () => sessionStorage.getItem("admin_auth") === "1",
-  );
   const [tab, setTab] = useState<"users" | "banners">("users");
 
-  if (!authed) return <Login onLogin={() => setAuthed(true)} />;
-
   const tabs = [
-    { key: "users" as const, label: "Applications", icon: Users },
+    { key: "users" as const, label: "Users", icon: Users },
     { key: "banners" as const, label: "Banners", icon: ImageIcon },
   ];
 
   return (
     <div className="min-h-screen bg-secondary/30 flex flex-col">
       {/* Top bar */}
-      <header className="bg-foreground text-white px-6 py-4 flex items-center justify-between shadow-md">
-        <div className="flex items-center gap-3">
-          <div className="bg-primary p-1.5 rounded-sm">
-            <BookOpen size={20} />
-          </div>
-          <div>
-            <span className="font-black text-lg">
-              Mahdi <span className="text-primary">IELTS</span>
-            </span>
-            <span className="ml-3 text-xs text-white/50 bg-white/10 px-2 py-0.5 rounded">
-              Admin
-            </span>
-          </div>
-        </div>
-        <div className="flex items-center gap-4">
-          <a
-            href="/"
-            className="text-sm text-white/60 hover:text-white transition-colors"
-          >
-            ← View Site
-          </a>
-          <button
-            onClick={() => {
-              sessionStorage.removeItem("admin_auth");
-              setAuthed(false);
-            }}
-            className="flex items-center gap-1.5 text-sm text-white/60 hover:text-white transition-colors"
-          >
-            <LogOut size={16} /> Sign Out
-          </button>
-        </div>
-      </header>
+      <Navbar />
 
-      <div className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 py-8">
+      <div className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 py-8 pt-24">
         {/* Tab nav */}
-        <div className="flex gap-1 bg-white rounded-xl border border-border p-1 w-fit mb-8 shadow-sm">
+        <div className="flex gap-1 bg-white rounded-xl border border-border p-1 w-fit mb-8 shadow-sm ">
           {tabs.map((t) => (
             <button
               key={t.key}
