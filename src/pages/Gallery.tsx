@@ -1,79 +1,37 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ZoomIn, ArrowRight } from "lucide-react";
+import { X, ZoomIn, Loader2 } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import { Navbar } from "../components/layout/Navbar";
 import { Footer } from "../components/layout/Footer";
+import { SERVER_URL } from "../lib/data";
 
-type Category = "All" | "Test Centers" | "Students" | "Achievements" | "Global";
-
+// Match the Backend Schema
 interface GalleryItem {
-  id: number;
+  _id: string;
   title: string;
-  subtitle?: string;
-  src?: string;
+  description?: string;
+  image: string;
 }
 
-const ITEMS: GalleryItem[] = [
-  {
-    id: 1,
-    title: "State-of-the-Art Testing Facilities",
-    subtitle: "Countries where PTE is administered",
-    src: "https://i.pinimg.com/736x/8d/8f/0a/8d8f0a482a2fccc637a430b1acd756c5.jpg",
-  },
-  {
-    id: 2,
-    title: "70+",
-    subtitle: "Countries where PTE is administered",
-    src: "https://reutersagency.com/hs-fs/hubfs/Home%20Images/Home%20Hero/Main%20screen%20Jan%2025/reuters-agency-home-hero-jan-25-1-california-wildfires-2.webp?width=1240&height=827&name=reuters-agency-home-hero-jan-25-1-california-wildfires-2.webp",
-  },
-  {
-    id: 3,
-    title: "Prepare with Confidence",
-    subtitle: "Countries where PTE is administered",
-    src: "https://blog.onevasco.com/wp-content/uploads/Famous-Buildings-in-Australia.jpg",
-  },
-  {
-    id: 4,
-    title: "48hrs",
-    subtitle: "Average results delivery time",
-    src: "https://i.pinimg.com/736x/8d/8f/0a/8d8f0a482a2fccc637a430b1acd756c5.jpg",
-  },
-  {
-    id: 5,
-    title: "Computer-Based",
-    subtitle: "Modern, bias-free AI scoring for every candidate",
-    src: "https://thumbs.dreamstime.com/b/beautiful-rain-forest-ang-ka-nature-trail-doi-inthanon-national-park-thailand-36703721.jpg",
-  },
-];
-
-const CATEGORIES: Category[] = [
-  "All",
-  "Test Centers",
-  "Students",
-  "Achievements",
-  "Global",
-];
-
-const accentStyles: Record<string, string> = {
-  red: "bg-[#C0152A] text-white",
-  crimson: "bg-[#8B0000] text-white",
-  rose: "bg-[#E63950] text-white",
-  dark: "bg-[#1A0508] text-white",
-};
-
 export default function Gallery() {
-  const [activeCategory, setActiveCategory] = useState<Category>("All");
   const [lightboxItem, setLightboxItem] = useState<GalleryItem | null>(null);
 
-  const filtered = ITEMS.filter(
-    (item) => activeCategory === "All" || item.category === activeCategory,
-  );
+  // Fetching data from your backend
+  const { data: items = [], isLoading } = useQuery({
+    queryKey: ["gallery-public"],
+    queryFn: async () => {
+      const res = await fetch(`${SERVER_URL}/api/user/gallery`);
+      if (!res.ok) throw new Error("Failed to fetch gallery");
+      return res.json();
+    },
+  });
 
   return (
     <div className="min-h-screen bg-[#FFF5F5] flex flex-col font-sans">
       <Navbar />
       <main className="flex-1 pt-[80px]">
-        {/* Page Header — deep red */}
+        {/* Page Header */}
         <section className="bg-[#8B0000] py-20 relative overflow-hidden">
           <div className="absolute inset-0 opacity-15">
             <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full bg-[#E63950]" />
@@ -93,41 +51,49 @@ export default function Gallery() {
               </h1>
               <p className="text-white/60 text-lg max-w-md leading-relaxed">
                 A curated glimpse into the world of Visa Express — test centers,
-                students, milestones, and the global reach of English
-                proficiency.
+                students, and milestones.
               </p>
             </motion.div>
           </div>
         </section>
 
-        {/* Masonry Grid */}
+        {/* Masonry Grid Section */}
         <section className="container mx-auto px-4 md:px-6 py-12 md:py-16">
-          <motion.div
-            layout
-            className="columns-1 sm:columns-2 lg:columns-3 gap-4 space-y-4"
-          >
-            <AnimatePresence mode="popLayout">
-              {filtered.map((item, i) => (
-                <motion.div
-                  key={item.id}
-                  layout
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.35, delay: i * 0.05 }}
-                  className="break-inside-avoid mb-4 group relative overflow-hidden rounded-2xl cursor-pointer"
-                  onClick={() => setLightboxItem(item)}
-                >
-                  <ImageCard item={item} />
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </motion.div>
-
-          {filtered.length === 0 && (
-            <div className="text-center py-24 text-red-300">
-              No items in this category yet.
+          {isLoading ? (
+            <div className="flex flex-col items-center justify-center py-24 text-[#8B0000]">
+              <Loader2 className="w-10 h-10 animate-spin mb-4" />
+              <p className="font-medium">Loading gallery...</p>
             </div>
+          ) : (
+            <>
+              <motion.div
+                layout
+                className="columns-1 sm:columns-2 lg:columns-3 gap-4 space-y-4"
+              >
+                <AnimatePresence mode="popLayout">
+                  {items.map((item: GalleryItem, i: number) => (
+                    <motion.div
+                      key={item._id}
+                      layout
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      transition={{ duration: 0.35, delay: i * 0.05 }}
+                      className="break-inside-avoid mb-4 group relative overflow-hidden rounded-2xl cursor-pointer"
+                      onClick={() => setLightboxItem(item)}
+                    >
+                      <ImageCard item={item} />
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </motion.div>
+
+              {items.length === 0 && (
+                <div className="text-center py-24 text-red-300">
+                  No items in the gallery yet.
+                </div>
+              )}
+            </>
           )}
         </section>
       </main>
@@ -148,7 +114,7 @@ function ImageCard({ item }: { item: GalleryItem }) {
   return (
     <>
       <img
-        src={item.src}
+        src={item.image}
         alt={item.title}
         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
       />
@@ -161,14 +127,15 @@ function ImageCard({ item }: { item: GalleryItem }) {
           <ZoomIn className="w-4 h-4 text-white" />
         </div>
       </div>
-      {/* Title & subtitle */}
+
+      {/* Title & description */}
       <div className="absolute bottom-0 left-0 right-0 p-5 translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
         <p className="text-white font-semibold text-lg leading-tight">
           {item.title}
         </p>
-        {item.subtitle && (
+        {item.description && (
           <p className="text-white/70 text-sm mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-75">
-            {item.subtitle}
+            {item.description}
           </p>
         )}
       </div>
@@ -197,28 +164,27 @@ function Lightbox({
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
         transition={{ duration: 0.25 }}
-        className="relative max-w-4xl w-full max-h-[85vh] rounded-2xl overflow-hidden"
+        className="relative max-w-4xl w-full max-h-[85vh] rounded-2xl overflow-hidden shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <img
-          src={item.src}
+          src={item.image}
           alt={item.title}
-          className="w-full h-full object-cover max-h-[75vh]"
+          className="w-full h-auto object-contain max-h-[75vh] mx-auto bg-black/20"
         />
 
-        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[#4A0010]/90 to-transparent p-6">
-          <span className="text-[#FF8FA3] text-xs font-semibold uppercase tracking-[0.15em] mb-1 block">
-            {item.category}
-          </span>
-          <h2 className="text-white text-2xl  font-bold">{item.title}</h2>
-          {item.subtitle && (
-            <p className="text-white/70 text-sm mt-1">{item.subtitle}</p>
+        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[#4A0010]/95 via-[#4A0010]/70 to-transparent p-8">
+          <h2 className="text-white text-2xl font-bold">{item.title}</h2>
+          {item.description && (
+            <p className="text-white/70 text-base mt-2 max-w-2xl">
+              {item.description}
+            </p>
           )}
         </div>
 
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 w-10 h-10 rounded-full bg-[#C0152A]/40 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-[#C0152A]/60 transition-colors"
+          className="absolute top-4 right-4 w-10 h-10 rounded-full bg-[#C0152A]/60 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-[#C0152A] transition-all"
         >
           <X className="w-5 h-5" />
         </button>
