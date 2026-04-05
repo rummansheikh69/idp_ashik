@@ -4,7 +4,7 @@ import { ArrowLeft, CheckCircle2, Quote } from "lucide-react";
 import { Link } from "wouter";
 
 const HIGHLIGHTS = [
-  "12+ years leading GlobalVisa to success",
+  "15+ years leading Visa Express to success",
   "Personally guided over 50,000 students",
   "Certified IELTS & Visa Consultant",
   "Speaker at international education forums",
