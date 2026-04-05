@@ -6,7 +6,7 @@ import { Link } from "wouter";
 const COUNTRIES = [
   {
     name: "United States",
-    flag: "🇺🇸",
+    flag: "https://cdn-icons-png.flaticon.com/128/197/197484.png",
     lang: "English",
     image:
       "https://images.unsplash.com/photo-1467269204594-9661b134dd2b?q=80&w=800&fit=crop",
@@ -19,7 +19,7 @@ const COUNTRIES = [
   },
   {
     name: "United Kingdom",
-    flag: "🇬🇧",
+    flag: "https://cdn-icons-png.flaticon.com/128/197/197374.png",
     lang: "English",
     image:
       "https://images.unsplash.com/photo-1467269204594-9661b134dd2b?q=80&w=800&fit=crop",
@@ -32,7 +32,7 @@ const COUNTRIES = [
   },
   {
     name: "Canada ",
-    flag: "🇨🇦",
+    flag: "https://cdn-icons-png.flaticon.com/128/197/197430.png",
     lang: "English",
     image:
       "https://images.unsplash.com/photo-1467269204594-9661b134dd2b?q=80&w=800&fit=crop",
@@ -45,10 +45,11 @@ const COUNTRIES = [
   },
   {
     name: "Australia ",
-    flag: "🇦🇺",
+    flag: "https://cdn-icons-png.flaticon.com/128/16021/16021902.png",
     lang: "English",
     image:
       "https://images.unsplash.com/photo-1467269204594-9661b134dd2b?q=80&w=800&fit=crop",
+
     desc: [
       "For Bangladeshi students planning to pursue a Bachelor’s or Master’s degree in Australia, fulfilling the entry requirements is essential for a smooth admission and visa process. Students applying for undergraduate programs must have completed HSC or equivalent with satisfactory academic results, while postgraduate applicants must hold a recognized Bachelor’s degree in a relevant field with a good GPA.",
       "English language proficiency is mandatory, typically demonstrated through IELTS, PTE, or equivalent tests, with score requirements varying by university and course. Applicants must also prepare essential documents, including a valid passport, academic transcripts and certificates, a Statement of Purpose (SOP), and in some cases, Letters of Recommendation (LOR).",
@@ -58,7 +59,7 @@ const COUNTRIES = [
   },
   {
     name: "New Zealand",
-    flag: "🇳🇿",
+    flag: "https://cdn-icons-png.flaticon.com/128/11848/11848559.png",
     lang: "English",
     image:
       "https://images.unsplash.com/photo-1467269204594-9661b134dd2b?q=80&w=800&fit=crop",
@@ -71,7 +72,7 @@ const COUNTRIES = [
   },
   {
     name: "Ireland ",
-    flag: "🇮🇪",
+    flag: "https://cdn-icons-png.flaticon.com/128/11848/11848837.png",
     lang: "English",
     image:
       "https://images.unsplash.com/photo-1467269204594-9661b134dd2b?q=80&w=800&fit=crop",
@@ -116,7 +117,13 @@ export default function EnglishCountriesPage() {
             >
               <div className={i % 2 === 1 ? "lg:col-start-2" : ""}>
                 <div className="flex items-center gap-3 mb-3">
-                  <span className="text-4xl">{c.flag}</span>
+                  <div className=" size-10 rounded-full overflow-hidden">
+                    <img
+                      src={c.flag}
+                      alt={c.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
                   <div>
                     <h2 className="text-2xl font-display font-bold text-primary">
                       {c.name}
