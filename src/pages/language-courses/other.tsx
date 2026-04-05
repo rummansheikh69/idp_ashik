@@ -6,7 +6,7 @@ import { Link } from "wouter";
 const COUNTRIES = [
   {
     name: "China ",
-    flag: "🇨🇳",
+    flag: "https://cdn-icons-png.flaticon.com/128/197/197375.png",
     lang: "Chinese (Mandarin)",
     image:
       "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&w=800&fit=crop",
@@ -19,7 +19,7 @@ const COUNTRIES = [
   },
   {
     name: "South Korea ",
-    flag: "🇰🇷",
+    flag: "https://cdn-icons-png.flaticon.com/128/5111/5111586.png",
     lang: "Korean",
     image:
       "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&w=800&fit=crop",
@@ -32,7 +32,7 @@ const COUNTRIES = [
   },
   {
     name: "Thailand ",
-    flag: "🇹🇭",
+    flag: "https://cdn-icons-png.flaticon.com/128/197/197452.png",
     lang: "Thai",
     image:
       "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&w=800&fit=crop",
@@ -45,7 +45,7 @@ const COUNTRIES = [
   },
   {
     name: "Malaysia  ",
-    flag: "🇲🇾",
+    flag: "https://cdn-icons-png.flaticon.com/128/16022/16022370.png",
     lang: "Malaysian",
     image:
       "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&w=800&fit=crop",
@@ -59,7 +59,7 @@ const COUNTRIES = [
   },
   {
     name: "United Arab Emirates ",
-    flag: "🇦🇪",
+    flag: "https://cdn-icons-png.flaticon.com/128/323/323301.png",
     lang: "Arabic",
     image:
       "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&w=800&fit=crop",
@@ -103,7 +103,13 @@ export default function OtherCountriesPage() {
             >
               <div className={i % 2 === 1 ? "lg:col-start-2" : ""}>
                 <div className="flex items-center gap-3 mb-3">
-                  <span className="text-4xl">{c.flag}</span>
+                  <div className=" size-10 rounded-full overflow-hidden">
+                    <img
+                      src={c.flag}
+                      alt={c.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
                   <div>
                     <h2 className="text-2xl font-display font-bold text-primary">
                       {c.name}

@@ -6,7 +6,7 @@ import { Link } from "wouter";
 const COUNTRIES = [
   {
     name: "Germany",
-    flag: "🇩🇪",
+    flag: "https://cdn-icons-png.flaticon.com/128/197/197571.png",
     lang: "German",
     image:
       "https://images.unsplash.com/photo-1467269204594-9661b134dd2b?q=80&w=800&fit=crop",
@@ -25,7 +25,7 @@ const COUNTRIES = [
   },
   {
     name: "Italy",
-    flag: "🇮🇹",
+    flag: "https://cdn-icons-png.flaticon.com/128/323/323325.png",
     lang: "Italian",
     image:
       "https://images.unsplash.com/photo-1549144511-f099e773c147?q=80&w=800&fit=crop",
@@ -44,7 +44,7 @@ const COUNTRIES = [
   },
   {
     name: "Netherlands",
-    flag: "🇳🇱",
+    flag: "https://cdn-icons-png.flaticon.com/128/323/323275.png",
     lang: "Dutch / English",
     image:
       "https://images.unsplash.com/photo-1512470876302-972faa2aa9a4?q=80&w=800&fit=crop",
@@ -63,7 +63,7 @@ const COUNTRIES = [
   },
   {
     name: "Sweden",
-    flag: "🇸🇪",
+    flag: "https://cdn-icons-png.flaticon.com/128/197/197564.png",
     lang: "Swedish",
     image:
       "https://images.unsplash.com/photo-1543783207-ec64e4d95325?q=80&w=800&fit=crop",
@@ -82,7 +82,7 @@ const COUNTRIES = [
   },
   {
     name: "Russia",
-    flag: "🇷🇺",
+    flag: "https://cdn-icons-png.flaticon.com/128/4628/4628645.png",
     lang: "Russian",
     image:
       "https://images.unsplash.com/photo-1543783207-ec64e4d95325?q=80&w=800&fit=crop",
@@ -95,7 +95,7 @@ const COUNTRIES = [
   },
   {
     name: "Georgia",
-    flag: "🇬🇪",
+    flag: "https://cdn-icons-png.flaticon.com/128/4628/4628662.png",
     lang: "Georgian",
     image:
       "https://images.unsplash.com/photo-1543783207-ec64e4d95325?q=80&w=800&fit=crop",
@@ -108,7 +108,7 @@ const COUNTRIES = [
   },
   {
     name: "Romania ",
-    flag: "🇷🇴",
+    flag: "https://cdn-icons-png.flaticon.com/128/197/197587.png",
     lang: "Romanian",
     image:
       "https://images.unsplash.com/photo-1543783207-ec64e4d95325?q=80&w=800&fit=crop",
@@ -121,7 +121,7 @@ const COUNTRIES = [
   },
   {
     name: "Malta ",
-    flag: "🇲🇹",
+    flag: "https://cdn-icons-png.flaticon.com/128/197/197625.png",
     lang: "Maltese",
     image:
       "https://images.unsplash.com/photo-1543783207-ec64e4d95325?q=80&w=800&fit=crop",
@@ -134,7 +134,7 @@ const COUNTRIES = [
   },
   {
     name: "Hungary ",
-    flag: "🇭🇺",
+    flag: "https://cdn-icons-png.flaticon.com/128/197/197584.png",
     lang: "Hungarian",
     image:
       "https://images.unsplash.com/photo-1543783207-ec64e4d95325?q=80&w=800&fit=crop",
@@ -147,7 +147,7 @@ const COUNTRIES = [
   },
   {
     name: "Lithuania ",
-    flag: "🇱🇹",
+    flag: "https://cdn-icons-png.flaticon.com/128/16022/16022338.png",
     lang: "Lithuanian",
     image:
       "https://images.unsplash.com/photo-1543783207-ec64e4d95325?q=80&w=800&fit=crop",
@@ -160,7 +160,7 @@ const COUNTRIES = [
   },
   {
     name: "Finland ",
-    flag: "🇫🇮",
+    flag: "https://cdn-icons-png.flaticon.com/128/197/197585.png",
     lang: "Finnish",
     image:
       "https://images.unsplash.com/photo-1543783207-ec64e4d95325?q=80&w=800&fit=crop",
@@ -173,7 +173,7 @@ const COUNTRIES = [
   },
   {
     name: "Estonia",
-    flag: "🇪🇪",
+    flag: "https://cdn-icons-png.flaticon.com/128/197/197379.png",
     lang: "Estonian",
     image:
       "https://images.unsplash.com/photo-1543783207-ec64e4d95325?q=80&w=800&fit=crop",
@@ -186,7 +186,7 @@ const COUNTRIES = [
   },
   {
     name: "Czech Republic",
-    flag: "🇨🇿",
+    flag: "https://cdn-icons-png.flaticon.com/128/197/197576.png",
     lang: "Czech",
     image:
       "https://images.unsplash.com/photo-1543783207-ec64e4d95325?q=80&w=800&fit=crop",
@@ -199,7 +199,7 @@ const COUNTRIES = [
   },
   {
     name: "Austria ",
-    flag: "🇦🇹",
+    flag: "https://cdn-icons-png.flaticon.com/128/197/197447.png",
     lang: "German",
     image:
       "https://images.unsplash.com/photo-1543783207-ec64e4d95325?q=80&w=800&fit=crop",
@@ -212,7 +212,7 @@ const COUNTRIES = [
   },
   {
     name: "Cyprus",
-    flag: "🇨🇾",
+    flag: "https://cdn-icons-png.flaticon.com/128/13979/13979912.png",
     lang: "Greek / Turkish",
     image:
       "https://images.unsplash.com/photo-1543783207-ec64e4d95325?q=80&w=800&fit=crop",
@@ -256,7 +256,13 @@ export default function EuropeanCountriesPage() {
             >
               <div className={i % 2 === 1 ? "lg:col-start-2" : ""}>
                 <div className="flex items-center gap-3 mb-3">
-                  <span className="text-4xl">{c.flag}</span>
+                  <div className=" size-10 rounded-full overflow-hidden">
+                    <img
+                      src={c.flag}
+                      alt={c.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
                   <div>
                     <h2 className="text-2xl font-display font-bold text-primary">
                       {c.name}
