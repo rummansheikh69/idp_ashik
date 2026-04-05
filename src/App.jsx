@@ -62,9 +62,11 @@ function App() {
   });
 
   if (isLoading) {
-    <div className=" w-full h-screen flex items-center justify-center">
-      <Loader2 className="animate-spin size-5" />
-    </div>;
+    return (
+      <div className=" w-full h-screen flex items-center justify-center">
+        <Loader2 className="animate-spin size-5" />
+      </div>
+    );
   }
 
   return (

@@ -24,8 +24,15 @@ import {
   LogOut,
   Camera,
   RotateCcw,
+  ClipboardPenLine,
+  BookImage,
+  Loader2,
 } from "lucide-react";
 import { Navbar } from "../../components/layout/Navbar";
+import { Redirect } from "wouter";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { SERVER_URL } from "../../lib/data";
+import { toast } from "react-hot-toast";
 
 // ── Types ────────────────────────────────────────────────────────────
 interface User {
@@ -55,6 +62,7 @@ interface Banner {
   image: string;
   active: boolean;
   order: number;
+  tag: string;
   createdAt: string;
 }
 
@@ -93,118 +101,77 @@ const statusConfig = {
 
 // ── Users Tab ────────────────────────────────────────────────────────
 function UsersTab() {
-  const [users, setUsers] = useState<User[]>(getUsers);
+  const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [selected, setSelected] = useState<User | null>(null);
-  const [editNotes, setEditNotes] = useState("");
-  const [editStatus, setEditStatus] = useState<User["status"]>("pending");
-  const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
-  const [sortField, setSortField] = useState<"appliedAt" | "fullName">(
-    "appliedAt",
-  );
   const [showPassword, setShowPassword] = useState<string | null>(null);
-  const [sortAsc, setSortAsc] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+  const [showForm, setShowForm] = useState(false);
+  const [form, setForm] = useState({ name: "", password: "", email: "" });
 
-  const refresh = () => setUsers(getUsers());
+  // 1. Fetch Users Query
+  const { data: users = [], isLoading } = useQuery({
+    queryKey: ["users"],
+    queryFn: async () => {
+      const res = await fetch(`${SERVER_URL}/api/user/users`, {
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error("Failed to fetch users");
+      return res.json();
+    },
+  });
 
-  const filtered = users
-    .filter(
-      (u) =>
-        (statusFilter === "all" || u.status === statusFilter) &&
-        (u.fullName?.toLowerCase().includes(search.toLowerCase()) ||
-          u.email?.toLowerCase().includes(search.toLowerCase()) ||
-          u.course?.toLowerCase().includes(search.toLowerCase())),
-    )
-    .sort((a, b) => {
-      const va = a[sortField] ?? "";
-      const vb = b[sortField] ?? "";
-      return sortAsc ? va.localeCompare(vb) : vb.localeCompare(va);
-    });
+  // 2. Add User Mutation
+  const { mutate: addUser, isPending: isAdding } = useMutation({
+    mutationFn: async (newUser: typeof form) => {
+      const res = await fetch(`${SERVER_URL}/api/auth/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newUser),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Failed to add user");
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+      toast.success("User added successfully");
+      reset();
+    },
+    onError: (err: any) => toast.error(err.message),
+  });
 
-  const openUser = (u: User) => {
-    setSelected(u);
-    setEditNotes(u.notes);
-    setEditStatus(u.status);
+  // 3. Delete User Mutation
+  const { mutate: removeUser } = useMutation({
+    mutationFn: async (id: string) => {
+      const res = await fetch(`${SERVER_URL}/api/user/users/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error("Delete failed");
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+      toast.success("User deleted");
+      setConfirmDelete(null);
+    },
+    onError: () => toast.error("Could not delete user"),
+  });
+
+  const filtered = users.filter(
+    (u: any) =>
+      u.fullName?.toLowerCase().includes(search.toLowerCase()) ||
+      u.email?.toLowerCase().includes(search.toLowerCase()),
+  );
+
+  const reset = () => {
+    setForm({ name: "", password: "", email: "" });
+    setShowForm(false);
   };
-
-  const saveUser = () => {
-    if (!selected) return;
-    const updated = users.map((u) =>
-      u.id === selected.id ? { ...u, status: editStatus, notes: editNotes } : u,
-    );
-    saveUsers(updated);
-    setUsers(updated);
-    setSelected(null);
-  };
-
-  const deleteUser = (id: string) => {
-    const updated = users.filter((u) => u.id !== id);
-    saveUsers(updated);
-    setUsers(updated);
-    setConfirmDelete(null);
-    setSelected(null);
-  };
-
-  const toggleSort = (f: typeof sortField) => {
-    if (sortField === f) setSortAsc(!sortAsc);
-    else {
-      setSortField(f);
-      setSortAsc(true);
-    }
-  };
-
-  // Add demo user if empty
-  useEffect(() => {
-    if (getUsers().length === 0) {
-      const demo: User[] = [
-        {
-          id: "demo1",
-          fullName: "Ahmed Khan",
-          fatherName: "Rashid Khan",
-          dob: "1998-05-12",
-          nationality: "Pakistani",
-          phone: "+92 300 1234567",
-          email: "ahmed@example.com",
-          whatsapp: "+92 300 1234567",
-          currentBand: "5.5",
-          targetBand: "7.0",
-          course: "IELTS Academic",
-          address: "Lahore, Pakistan",
-          message: "Eager to start!",
-          photo: "",
-          status: "pending",
-          appliedAt: new Date().toISOString(),
-          notes: "",
-        },
-        {
-          id: "demo2",
-          fullName: "Sara Ali",
-          fatherName: "Tariq Ali",
-          dob: "2000-09-22",
-          nationality: "Pakistani",
-          phone: "+92 321 9876543",
-          email: "sara@example.com",
-          whatsapp: "",
-          currentBand: "6.0",
-          targetBand: "7.5",
-          course: "Weekend Batch",
-          address: "Karachi, Pakistan",
-          message: "Need flexible schedule",
-          photo: "",
-          status: "enrolled",
-          appliedAt: new Date(Date.now() - 86400000).toISOString(),
-          notes: "Enrolled on 2025-01-15",
-        },
-      ];
-      saveUsers(demo);
-      setUsers(demo);
-    }
-  }, []);
 
   return (
     <div>
-      {/* Filters */}
+      {/* Filters & Search */}
       <div className="flex flex-col sm:flex-row gap-3 mb-4">
         <div className="relative flex-1">
           <Search
@@ -218,95 +185,130 @@ function UsersTab() {
             className="w-full pl-9 pr-4 py-2.5 border border-border rounded-sm text-sm focus:outline-none focus:border-primary"
           />
         </div>
+        <button
+          onClick={() => setShowForm(true)}
+          className="flex items-center gap-2 bg-primary text-white font-bold px-5 py-2.5 hover:bg-primary/90 transition-colors text-sm"
+        >
+          <Plus size={16} /> Add User
+        </button>
       </div>
 
-      {/* Table */}
-      <div className="bg-white rounded-xl border border-border overflow-hidden shadow-sm">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="bg-secondary/40 border-b border-border">
-                <th
-                  className="px-4 py-3 text-left cursor-pointer"
-                  onClick={() => toggleSort("fullName")}
+      {/* Add User Modal */}
+      <AnimatePresence>
+        {showForm && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4"
+            onClick={reset}
+          >
+            <motion.div
+              initial={{ scale: 0.95 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.95 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden"
+            >
+              <div className="p-6 border-b flex justify-between items-center">
+                <h3 className="font-bold text-lg">New Admission Officer</h3>
+                <X className="cursor-pointer" onClick={reset} />
+              </div>
+              <form
+                className="p-6 space-y-4"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  addUser(form);
+                }}
+              >
+                <input
+                  placeholder="Full Name"
+                  className="w-full border p-3 rounded-sm text-sm"
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  required
+                />
+                <input
+                  type="email"
+                  placeholder="Email Address"
+                  className="w-full border p-3 rounded-sm text-sm"
+                  value={form.email}
+                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  required
+                />
+                <input
+                  type="password"
+                  placeholder="Password"
+                  className="w-full border p-3 rounded-sm text-sm"
+                  value={form.password}
+                  onChange={(e) =>
+                    setForm({ ...form, password: e.target.value })
+                  }
+                  required
+                />
+                <button
+                  disabled={isAdding}
+                  className="w-full bg-primary text-white font-bold py-3 hover:bg-primary/90 flex justify-center"
                 >
-                  <span className="flex items-center gap-1 font-semibold text-muted-foreground">
-                    Name <ArrowUpDown size={13} />
-                  </span>
-                </th>
-                <th className="px-4 py-3 text-left font-semibold text-muted-foreground">
-                  Email
-                </th>
-                <th className="px-4 py-3 text-left font-semibold text-muted-foreground">
-                  Password
-                </th>
+                  {isAdding ? (
+                    <Loader2 className="animate-spin" />
+                  ) : (
+                    "Create Account"
+                  )}
+                </button>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-                <th className="px-4 py-3 text-left font-semibold text-muted-foreground">
-                  Actions
-                </th>
+      {/* Users Table */}
+      <div className="bg-white rounded-xl border overflow-hidden shadow-sm">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="bg-secondary/40 border-b">
+              <th className="px-4 py-3 text-left">Name</th>
+              <th className="px-4 py-3 text-left">Email</th>
+              <th className="px-4 py-3 text-left">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {isLoading ? (
+              <tr>
+                <td colSpan={3} className="py-10 text-center">
+                  <Loader2 className="animate-spin mx-auto" />
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {filtered.length === 0 ? (
-                <tr>
-                  <td
-                    colSpan={7}
-                    className="px-4 py-12 text-center text-muted-foreground"
-                  >
-                    No applications found
+            ) : filtered.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={3}
+                  className="py-10 text-center text-muted-foreground"
+                >
+                  No users found
+                </td>
+              </tr>
+            ) : (
+              filtered.map((u: any) => (
+                <tr key={u._id} className="border-b hover:bg-secondary/10">
+                  <td className="px-4 py-3 font-medium">{u.name}</td>
+                  <td className="px-4 py-3 text-muted-foreground">{u.email}</td>
+                  <td className="px-4 py-3">
+                    <button
+                      onClick={() => setConfirmDelete(u._id)}
+                      className="text-red-500 hover:bg-red-50 p-2 rounded-md transition-colors"
+                    >
+                      <Trash2 size={16} />
+                    </button>
                   </td>
                 </tr>
-              ) : (
-                filtered.map((u, i) => {
-                  const sc = statusConfig[u.status];
-                  return (
-                    <tr
-                      key={u.id}
-                      className={`border-b border-border/50 hover:bg-secondary/20 transition-colors ${i % 2 === 0 ? "" : "bg-secondary/10"}`}
-                    >
-                      <td className="px-4 py-3">
-                        <div className="font-semibold text-foreground">
-                          {u.fullName}
-                        </div>
-                      </td>
-                      <td className="px-4 py-3 text-foreground/70">
-                        {u.email}
-                      </td>
-                      <td className="px-4 py-3">
-                        <span className="text-muted-foreground italic">
-                          {showPassword === u.id ? "password123" : "••••••••"}
-                        </span>
-                        <Eye
-                          size={16}
-                          className="inline-block ml-2 text-muted-foreground hover:text-primary cursor-pointer"
-                          title="Show password"
-                          onClick={() =>
-                            setShowPassword(showPassword === u.id ? null : u.id)
-                          }
-                        />
-                      </td>
-
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => setConfirmDelete(u.id)}
-                            className="w-8 h-8 flex items-center justify-center rounded-md hover:bg-red-50 text-red-500 transition-colors"
-                            title="Delete"
-                          >
-                            <Trash2 size={15} />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
-        </div>
+              ))
+            )}
+          </tbody>
+        </table>
       </div>
 
-      {/* Confirm delete */}
+      {/* Delete Confirmation Modal */}
       <AnimatePresence>
         {confirmDelete && (
           <motion.div
@@ -315,32 +317,27 @@ function UsersTab() {
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4"
           >
-            <motion.div
-              initial={{ scale: 0.9 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.9 }}
-              className="bg-white rounded-2xl p-8 max-w-sm w-full text-center shadow-2xl"
-            >
+            <div className="bg-white rounded-2xl p-8 max-w-sm w-full text-center">
               <Trash2 size={40} className="text-red-500 mx-auto mb-4" />
-              <h3 className="text-xl font-bold mb-2">Delete Application?</h3>
-              <p className="text-muted-foreground text-sm mb-6">
-                This action cannot be undone.
+              <h3 className="text-xl font-bold mb-2">Confirm Delete</h3>
+              <p className="text-sm text-muted-foreground mb-6">
+                This will remove this user's access permanently.
               </p>
               <div className="flex gap-3">
                 <button
                   onClick={() => setConfirmDelete(null)}
-                  className="flex-1 border border-border py-2.5 text-sm font-semibold rounded-sm hover:bg-secondary transition-colors"
+                  className="flex-1 border py-2 rounded-sm"
                 >
                   Cancel
                 </button>
                 <button
-                  onClick={() => deleteUser(confirmDelete)}
-                  className="flex-1 bg-red-500 text-white py-2.5 text-sm font-bold rounded-sm hover:bg-red-600 transition-colors"
+                  onClick={() => removeUser(confirmDelete)}
+                  className="flex-1 bg-red-500 text-white font-bold py-2 rounded-sm"
                 >
                   Delete
                 </button>
               </div>
-            </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -350,29 +347,85 @@ function UsersTab() {
 
 // ── Banners Tab ──────────────────────────────────────────────────────
 function BannersTab() {
-  const [banners, setBanners] = useState<Banner[]>(getBanners);
+  const queryClient = useQueryClient();
   const [showForm, setShowForm] = useState(false);
-  const [editBanner, setEditBanner] = useState<Banner | null>(null);
+  const [editBanner, setEditBanner] = useState<any | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+  const [imageMode, setImageMode] = useState<"url" | "upload" | "camera">(
+    "url",
+  );
+  const [cameraOpen, setCameraOpen] = useState(false);
+
   const [form, setForm] = useState({
     title: "",
     description: "",
     image: "",
-    active: true,
-    order: 1,
+    tag: "",
   });
+
   const fileRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
-  const [cameraOpen, setCameraOpen] = useState(false);
-  const [imageMode, setImageMode] = useState<"url" | "upload" | "camera">(
-    "url",
-  );
+
+  // --- API QUERIES ---
+
+  const { data: banners = [], isLoading } = useQuery({
+    queryKey: ["banners"],
+    queryFn: async () => {
+      const res = await fetch(`${SERVER_URL}/api/user/banners`);
+      if (!res.ok) throw new Error("Failed to fetch banners");
+      return res.json();
+    },
+  });
+
+  const { mutate: saveBanner, isPending: isSaving } = useMutation({
+    mutationFn: async (payload: typeof form) => {
+      const method = editBanner ? "PUT" : "POST";
+      const url = editBanner
+        ? `${SERVER_URL}/api/user/banner/${editBanner._id}`
+        : `${SERVER_URL}/api/user/banner`;
+
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Operation failed");
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["banners"] });
+      toast.success(editBanner ? "Banner updated!" : "Banner created!");
+      reset();
+    },
+    onError: (err: any) => toast.error(err.message),
+  });
+
+  const { mutate: removeBanner } = useMutation({
+    mutationFn: async (id: string) => {
+      const res = await fetch(`${SERVER_URL}/api/user/banner/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error("Delete failed");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["banners"] });
+      toast.success("Banner removed");
+      setConfirmDelete(null);
+    },
+  });
+
+  // --- HELPERS ---
 
   const stopCamera = () => {
     streamRef.current?.getTracks().forEach((t) => t.stop());
     streamRef.current = null;
+    setCameraOpen(false);
   };
 
   const openCamera = async () => {
@@ -383,7 +436,7 @@ function BannersTab() {
       if (videoRef.current) videoRef.current.srcObject = stream;
     } catch {
       setCameraOpen(false);
-      alert("Camera access denied.");
+      toast.error("Camera access denied.");
     }
   };
 
@@ -396,7 +449,6 @@ function BannersTab() {
     c.getContext("2d")?.drawImage(v, 0, 0);
     setForm((p) => ({ ...p, image: c.toDataURL("image/jpeg", 0.85) }));
     stopCamera();
-    setCameraOpen(false);
   };
 
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -408,14 +460,13 @@ function BannersTab() {
     reader.readAsDataURL(file);
   };
 
-  const openEdit = (b: Banner) => {
+  const openEdit = (b: any) => {
     setEditBanner(b);
     setForm({
       title: b.title,
       description: b.description,
       image: b.image,
-      active: b.active,
-      order: b.order,
+      tag: b.tag,
     });
     setShowForm(true);
   };
@@ -423,91 +474,13 @@ function BannersTab() {
   const reset = () => {
     setShowForm(false);
     setEditBanner(null);
-    setForm({
-      title: "",
-      description: "",
-      image: "",
-      active: true,
-      order: banners.length + 1,
-    });
+    setForm({ title: "", description: "", image: "", tag: "" });
     stopCamera();
-    setCameraOpen(false);
   };
 
-  const saveBanner = () => {
-    let updated: Banner[];
-    if (editBanner) {
-      updated = banners.map((b) =>
-        b.id === editBanner.id ? { ...b, ...form } : b,
-      );
-    } else {
-      const newB: Banner = {
-        id: Date.now().toString(),
-        ...form,
-        createdAt: new Date().toISOString(),
-      };
-      updated = [newB, ...banners];
-    }
-    saveBanners(updated);
-    setBanners(updated);
-    reset();
+  const updateField = (k: string) => (e: any) => {
+    setForm((p) => ({ ...p, [k]: e.target.value }));
   };
-
-  const deleteBanner = (id: string) => {
-    const updated = banners.filter((b) => b.id !== id);
-    saveBanners(updated);
-    setBanners(updated);
-    setConfirmDelete(null);
-  };
-
-  const toggleActive = (id: string) => {
-    const updated = banners.map((b) =>
-      b.id === id ? { ...b, active: !b.active } : b,
-    );
-    saveBanners(updated);
-    setBanners(updated);
-  };
-
-  // Demo banners
-  useEffect(() => {
-    if (getBanners().length === 0) {
-      const demo: Banner[] = [
-        {
-          id: "b1",
-          title: "Achieve Band 9.0 This Year",
-          description:
-            "Join our premium IELTS Academic program and get expert coaching from certified trainers.",
-          image: "",
-          active: true,
-          order: 1,
-          createdAt: new Date().toISOString(),
-        },
-        {
-          id: "b2",
-          title: "Online Batch — Now Enrolling",
-          description:
-            "Study from anywhere in the world with our interactive live online sessions.",
-          image: "",
-          active: true,
-          order: 2,
-          createdAt: new Date().toISOString(),
-        },
-      ];
-      saveBanners(demo);
-      setBanners(demo);
-    }
-  }, []);
-
-  const set =
-    (k: string) =>
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-      setForm((p) => ({
-        ...p,
-        [k]:
-          e.target.type === "checkbox"
-            ? (e.target as HTMLInputElement).checked
-            : e.target.value,
-      }));
 
   return (
     <div>
@@ -517,8 +490,7 @@ function BannersTab() {
             Banner Management
           </h2>
           <p className="text-sm text-muted-foreground">
-            {banners.length} banners · {banners.filter((b) => b.active).length}{" "}
-            active
+            {banners.length} Active Banners
           </p>
         </div>
         <button
@@ -534,87 +506,63 @@ function BannersTab() {
 
       {/* Banner list */}
       <div className="space-y-4">
-        {banners.length === 0 ? (
-          <div className="text-center py-16 text-muted-foreground bg-white rounded-xl border border-border">
+        {isLoading ? (
+          <div className="text-center py-20">
+            <Loader2 className="animate-spin mx-auto text-primary" />
+          </div>
+        ) : banners.length === 0 ? (
+          <div className="text-center py-16 text-muted-foreground bg-white rounded-xl border">
             <ImageIcon size={40} className="mx-auto mb-3 opacity-40" />
-            No banners yet. Add your first banner.
+            No banners found.
           </div>
         ) : (
-          banners
-            .sort((a, b) => a.order - b.order)
-            .map((b) => (
-              <motion.div
-                key={b.id}
-                layout
-                className="bg-white rounded-xl border border-border shadow-sm overflow-hidden"
-              >
-                <div className="flex items-start gap-0">
-                  {/* Image preview */}
-                  <div className="w-40 h-28 bg-secondary/50 shrink-0 flex items-center justify-center overflow-hidden">
-                    {b.image ? (
-                      <img
-                        src={b.image}
-                        alt={b.title}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <ImageIcon
-                        size={32}
-                        className="text-muted-foreground/40"
-                      />
-                    )}
-                  </div>
-                  {/* Content */}
-                  <div className="flex-1 p-5 flex flex-col sm:flex-row sm:items-center gap-4">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-xs font-semibold text-muted-foreground bg-secondary px-2 py-0.5 rounded">
-                          Order #{b.order}
-                        </span>
-                        <span
-                          className={`text-xs font-semibold px-2 py-0.5 rounded ${b.active ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}
-                        >
-                          {b.active ? "Active" : "Inactive"}
-                        </span>
-                      </div>
-                      <h3 className="font-bold text-foreground">{b.title}</h3>
-                      <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
-                        {b.description}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                      <button
-                        onClick={() => toggleActive(b.id)}
-                        className="text-muted-foreground hover:text-primary transition-colors"
-                        title={b.active ? "Deactivate" : "Activate"}
-                      >
-                        {b.active ? (
-                          <ToggleRight size={28} className="text-green-500" />
-                        ) : (
-                          <ToggleLeft size={28} />
-                        )}
-                      </button>
-                      <button
-                        onClick={() => openEdit(b)}
-                        className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-blue-50 text-blue-600 transition-colors"
-                      >
-                        <Edit2 size={16} />
-                      </button>
-                      <button
-                        onClick={() => setConfirmDelete(b.id)}
-                        className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-red-50 text-red-500 transition-colors"
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
-                  </div>
+          banners.map((b: any) => (
+            <motion.div
+              key={b._id}
+              layout
+              className="bg-white rounded-xl border shadow-sm overflow-hidden flex gap-0"
+            >
+              <div className="w-40 h-28 bg-secondary/50 shrink-0 overflow-hidden">
+                {b.image ? (
+                  <img src={b.image} className="w-full h-full object-cover" />
+                ) : (
+                  <ImageIcon
+                    size={32}
+                    className="m-auto text-muted-foreground/40 mt-8"
+                  />
+                )}
+              </div>
+              <div className="flex-1 p-5 flex flex-col sm:flex-row sm:items-center gap-4">
+                <div className="flex-1">
+                  <span className="text-xs font-semibold text-muted-foreground bg-secondary px-2 py-0.5 rounded uppercase">
+                    {b.tag}
+                  </span>
+                  <h3 className="font-bold text-foreground mt-1">{b.title}</h3>
+                  <p className="text-sm text-muted-foreground line-clamp-1">
+                    {b.description}
+                  </p>
                 </div>
-              </motion.div>
-            ))
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => openEdit(b)}
+                    className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-blue-50 text-blue-600"
+                  >
+                    <Edit2 size={16} />
+                  </button>
+                  <button
+                    onClick={() => setConfirmDelete(b._id)}
+                    className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-red-50 text-red-500"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          ))
         )}
       </div>
 
-      {/* Banner form modal */}
+      {/* Form Modal */}
       <AnimatePresence>
         {showForm && (
           <motion.div
@@ -629,194 +577,168 @@ function BannersTab() {
               animate={{ scale: 1 }}
               exit={{ scale: 0.95 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-white rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto shadow-2xl"
+              className="bg-white rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto shadow-2xl p-6"
             >
-              <div className="flex items-center justify-between p-6 border-b border-border">
+              <div className="flex justify-between items-center mb-6">
                 <h3 className="text-lg font-bold">
-                  {editBanner ? "Edit Banner" : "Add New Banner"}
+                  {editBanner ? "Edit Banner" : "New Banner"}
                 </h3>
-                <button
-                  onClick={reset}
-                  className="text-muted-foreground hover:text-foreground"
-                >
-                  <X size={20} />
-                </button>
+                <X className="cursor-pointer" onClick={reset} />
               </div>
-              <div className="p-6 space-y-5">
+
+              <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-semibold mb-1.5">
-                    Banner Title *
+                  <label className="block text-sm font-semibold mb-1">
+                    Tag (e.g. Popular)
+                  </label>
+                  <input
+                    value={form.tag}
+                    onChange={updateField("tag")}
+                    className="w-full border p-3 rounded-sm text-sm"
+                    placeholder="Banner tag"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold mb-1">
+                    Title *
                   </label>
                   <input
                     value={form.title}
-                    onChange={set("title")}
+                    onChange={updateField("title")}
+                    className="w-full border p-3 rounded-sm text-sm"
+                    placeholder="Banner title"
                     required
-                    placeholder="e.g. Achieve Band 9.0 This Year"
-                    className="w-full border border-border rounded-sm px-4 py-3 text-sm focus:outline-none focus:border-primary"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold mb-1.5">
+                  <label className="block text-sm font-semibold mb-1">
                     Description *
                   </label>
                   <textarea
-                    rows={3}
                     value={form.description}
-                    onChange={set("description")}
+                    onChange={updateField("description")}
+                    className="w-full border p-3 rounded-sm text-sm"
+                    rows={2}
+                    placeholder="Brief details"
                     required
-                    placeholder="Banner subtitle/description..."
-                    className="w-full border border-border rounded-sm px-4 py-3 text-sm focus:outline-none focus:border-primary resize-none"
                   />
                 </div>
 
-                {/* Image section */}
+                {/* Image Selection */}
                 <div>
-                  <label className="block text-sm font-semibold mb-3">
+                  <label className="block text-sm font-semibold mb-2">
                     Banner Image
                   </label>
                   <div className="flex gap-2 mb-3">
-                    {(["url", "upload", "camera"] as const).map((m) => (
+                    {["url", "upload", "camera"].map((mode) => (
                       <button
-                        key={m}
+                        key={mode}
                         type="button"
-                        onClick={() => setImageMode(m)}
-                        className={`px-4 py-1.5 text-xs font-semibold rounded-full border transition-colors capitalize ${imageMode === m ? "bg-primary text-white border-primary" : "border-border text-muted-foreground hover:border-primary"}`}
+                        onClick={() => setImageMode(mode as any)}
+                        className={`px-4 py-1 text-xs rounded-full border ${imageMode === mode ? "bg-primary text-white" : "text-muted-foreground"}`}
                       >
-                        {m === "url"
-                          ? "URL"
-                          : m === "upload"
-                            ? "Upload"
-                            : "Camera"}
+                        {mode.toUpperCase()}
                       </button>
                     ))}
                   </div>
+
                   {imageMode === "url" && (
                     <input
                       value={form.image}
-                      onChange={set("image")}
+                      onChange={updateField("image")}
                       placeholder="https://..."
-                      className="w-full border border-border rounded-sm px-4 py-3 text-sm focus:outline-none focus:border-primary"
+                      className="w-full border p-3 rounded-sm text-sm"
                     />
                   )}
+
                   {imageMode === "upload" && (
-                    <div>
+                    <div
+                      onClick={() => fileRef.current?.click()}
+                      className="border-2 border-dashed rounded-sm py-6 text-center text-sm cursor-pointer hover:border-primary"
+                    >
                       <input
-                        ref={fileRef}
                         type="file"
+                        ref={fileRef}
+                        className="hidden"
                         accept="image/*"
                         onChange={handleFile}
-                        className="hidden"
                       />
-                      <button
-                        type="button"
-                        onClick={() => fileRef.current?.click()}
-                        className="w-full border-2 border-dashed border-border rounded-sm py-6 text-sm text-muted-foreground hover:border-primary hover:text-primary transition-colors"
-                      >
-                        Click to choose image file
-                      </button>
+                      Click to upload image
                     </div>
                   )}
+
                   {imageMode === "camera" && (
                     <div className="space-y-3">
                       {!cameraOpen && !form.image && (
                         <button
                           type="button"
                           onClick={openCamera}
-                          className="flex items-center gap-2 bg-foreground text-white px-5 py-2.5 text-sm font-semibold hover:bg-foreground/90 transition-colors rounded-sm"
+                          className="bg-black text-white px-4 py-2 text-sm rounded-sm"
                         >
-                          <Camera size={16} /> Open Camera
+                          Open Camera
                         </button>
                       )}
                       {cameraOpen && (
-                        <div className="space-y-3">
+                        <div>
                           <video
                             ref={videoRef}
                             autoPlay
                             playsInline
-                            muted
-                            className="w-full rounded-lg"
+                            className="w-full rounded-lg mb-2"
                           />
                           <button
                             type="button"
                             onClick={captureFrame}
-                            className="flex items-center gap-2 bg-primary text-white px-5 py-2.5 text-sm font-bold hover:bg-primary/90 transition-colors rounded-sm"
+                            className="bg-primary text-white px-4 py-2 text-sm rounded-sm"
                           >
-                            <Camera size={16} /> Capture
+                            Capture
                           </button>
                         </div>
                       )}
-                      {form.image && imageMode === "camera" && (
-                        <div className="space-y-2">
-                          <img
-                            src={form.image}
-                            className="w-full rounded-lg"
-                            alt="captured"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setForm((p) => ({ ...p, image: "" }));
-                              openCamera();
-                            }}
-                            className="flex items-center gap-1 text-sm text-muted-foreground hover:text-primary"
-                          >
-                            <RotateCcw size={14} /> Retake
-                          </button>
-                        </div>
+                      {form.image && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setForm((p) => ({ ...p, image: "" }));
+                            openCamera();
+                          }}
+                          className="text-xs text-muted-foreground flex items-center gap-1 mt-2"
+                        >
+                          <RotateCcw size={12} /> Retake
+                        </button>
                       )}
                       <canvas ref={canvasRef} className="hidden" />
                     </div>
                   )}
-                  {form.image && imageMode !== "camera" && (
+
+                  {form.image && (
                     <img
                       src={form.image}
-                      alt="preview"
-                      className="mt-3 w-full max-h-40 object-cover rounded-lg border border-border"
+                      className="mt-4 w-full h-40 object-cover rounded-lg border"
+                      alt="Preview"
                     />
                   )}
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-semibold mb-1.5">
-                      Display Order
-                    </label>
-                    <input
-                      type="number"
-                      min={1}
-                      value={form.order}
-                      onChange={set("order")}
-                      className="w-full border border-border rounded-sm px-4 py-3 text-sm focus:outline-none focus:border-primary"
-                    />
-                  </div>
-                  <div className="flex items-end pb-3">
-                    <label className="flex items-center gap-3 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={form.active}
-                        onChange={set("active")}
-                        className="w-4 h-4 accent-primary"
-                      />
-                      <span className="text-sm font-semibold">
-                        Active (visible on site)
-                      </span>
-                    </label>
-                  </div>
-                </div>
-
-                <div className="flex gap-3 pt-2">
+                <div className="flex gap-3 pt-4">
                   <button
                     onClick={reset}
-                    className="flex-1 border border-border py-2.5 text-sm font-semibold rounded-sm hover:bg-secondary transition-colors"
+                    className="flex-1 border py-3 text-sm font-semibold rounded-sm"
                   >
                     Cancel
                   </button>
                   <button
-                    onClick={saveBanner}
-                    disabled={!form.title || !form.description}
-                    className="flex-1 bg-primary text-white font-bold py-2.5 rounded-sm hover:bg-primary/90 transition-colors disabled:opacity-50"
+                    onClick={() => saveBanner(form)}
+                    disabled={isSaving || !form.title || !form.image}
+                    className="flex-1 bg-primary text-white font-bold py-3 rounded-sm flex justify-center disabled:opacity-50"
                   >
-                    {editBanner ? "Update Banner" : "Add Banner"}
+                    {isSaving ? (
+                      <Loader2 className="animate-spin" />
+                    ) : editBanner ? (
+                      "Update Banner"
+                    ) : (
+                      "Add Banner"
+                    )}
                   </button>
                 </div>
               </div>
@@ -825,7 +747,7 @@ function BannersTab() {
         )}
       </AnimatePresence>
 
-      {/* Confirm delete */}
+      {/* Delete Confirmation */}
       <AnimatePresence>
         {confirmDelete && (
           <motion.div
@@ -834,31 +756,453 @@ function BannersTab() {
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4"
           >
-            <motion.div
-              initial={{ scale: 0.9 }}
-              animate={{ scale: 1 }}
-              className="bg-white rounded-2xl p-8 max-w-sm w-full text-center shadow-2xl"
-            >
+            <div className="bg-white rounded-2xl p-8 max-w-sm w-full text-center">
               <Trash2 size={40} className="text-red-500 mx-auto mb-4" />
-              <h3 className="text-xl font-bold mb-2">Delete Banner?</h3>
-              <p className="text-muted-foreground text-sm mb-6">
-                This action cannot be undone.
+              <h3 className="text-xl font-bold mb-2">Delete?</h3>
+              <p className="text-sm text-muted-foreground mb-6">
+                This banner and its Cloudinary image will be deleted.
               </p>
               <div className="flex gap-3">
                 <button
                   onClick={() => setConfirmDelete(null)}
-                  className="flex-1 border border-border py-2.5 text-sm font-semibold rounded-sm hover:bg-secondary transition-colors"
+                  className="flex-1 border py-2.5 rounded-sm"
                 >
                   Cancel
                 </button>
                 <button
-                  onClick={() => deleteBanner(confirmDelete)}
-                  className="flex-1 bg-red-500 text-white py-2.5 text-sm font-bold rounded-sm hover:bg-red-600 transition-colors"
+                  onClick={() => removeBanner(confirmDelete)}
+                  className="flex-1 bg-red-500 text-white font-bold py-2.5 rounded-sm"
                 >
                   Delete
                 </button>
               </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+function GalleryTab() {
+  const queryClient = useQueryClient();
+  const [showForm, setShowForm] = useState(false);
+  const [editItem, setEditItem] = useState<any | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+  const [imageMode, setImageMode] = useState<"url" | "upload" | "camera">(
+    "url",
+  );
+  const [cameraOpen, setCameraOpen] = useState(false);
+
+  const [form, setForm] = useState({
+    title: "",
+    description: "",
+    image: "",
+  });
+
+  const fileRef = useRef<HTMLInputElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+
+  // --- API QUERIES ---
+
+  const { data: items = [], isLoading } = useQuery({
+    queryKey: ["gallery"],
+    queryFn: async () => {
+      const res = await fetch(`${SERVER_URL}/api/user/gallery`);
+      if (!res.ok) throw new Error("Failed to fetch gallery items");
+      return res.json();
+    },
+  });
+
+  const { mutate: saveItem, isPending: isSaving } = useMutation({
+    mutationFn: async (payload: typeof form) => {
+      const method = editItem ? "PUT" : "POST";
+      const url = editItem
+        ? `${SERVER_URL}/api/user/gallery/${editItem._id}`
+        : `${SERVER_URL}/api/user/gallery`;
+
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Operation failed");
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["gallery"] });
+      toast.success(editItem ? "Gallery item updated!" : "Gallery item added!");
+      reset();
+    },
+    onError: (err: any) => toast.error(err.message),
+  });
+
+  const { mutate: removeItem } = useMutation({
+    mutationFn: async (id: string) => {
+      const res = await fetch(`${SERVER_URL}/api/user/gallery/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error("Delete failed");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["gallery"] });
+      toast.success("Item removed from gallery");
+      setConfirmDelete(null);
+    },
+  });
+
+  // --- HELPERS ---
+
+  const stopCamera = () => {
+    streamRef.current?.getTracks().forEach((t) => t.stop());
+    streamRef.current = null;
+    setCameraOpen(false);
+  };
+
+  const openCamera = async () => {
+    setCameraOpen(true);
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      streamRef.current = stream;
+      if (videoRef.current) videoRef.current.srcObject = stream;
+    } catch {
+      setCameraOpen(false);
+      toast.error("Camera access denied.");
+    }
+  };
+
+  const captureFrame = () => {
+    if (!videoRef.current || !canvasRef.current) return;
+    const v = videoRef.current;
+    const c = canvasRef.current;
+    c.width = v.videoWidth;
+    c.height = v.videoHeight;
+    c.getContext("2d")?.drawImage(v, 0, 0);
+    setForm((p) => ({ ...p, image: c.toDataURL("image/jpeg", 0.85) }));
+    stopCamera();
+  };
+
+  const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () =>
+      setForm((p) => ({ ...p, image: reader.result as string }));
+    reader.readAsDataURL(file);
+  };
+
+  const openEdit = (item: any) => {
+    setEditItem(item);
+    setForm({
+      title: item.title,
+      description: item.description,
+      image: item.image,
+    });
+    setShowForm(true);
+  };
+
+  const reset = () => {
+    setShowForm(false);
+    setEditItem(null);
+    setForm({ title: "", description: "", image: "" });
+    stopCamera();
+  };
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h2 className="text-xl font-bold text-foreground">
+            Gallery Management
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            {items.length} Total Items
+          </p>
+        </div>
+        <button
+          onClick={() => {
+            reset();
+            setShowForm(true);
+          }}
+          className="flex items-center gap-2 bg-primary text-white font-bold px-5 py-2.5 hover:bg-primary/90 transition-colors text-sm"
+        >
+          <Plus size={16} /> Add to Gallery
+        </button>
+      </div>
+
+      {/* Gallery list */}
+      <div className="space-y-4">
+        {isLoading ? (
+          <div className="text-center py-20">
+            <Loader2 className="animate-spin mx-auto text-primary" />
+          </div>
+        ) : items.length === 0 ? (
+          <div className="text-center py-16 text-muted-foreground bg-white rounded-xl border">
+            <ImageIcon size={40} className="mx-auto mb-3 opacity-40" />
+            Gallery is empty.
+          </div>
+        ) : (
+          items.map((item: any) => (
+            <motion.div
+              key={item._id}
+              layout
+              className="bg-white rounded-xl border shadow-sm overflow-hidden flex gap-0"
+            >
+              <div className="w-40 h-28 bg-secondary/50 shrink-0 overflow-hidden">
+                {item.image ? (
+                  <img
+                    src={item.image}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <ImageIcon
+                    size={32}
+                    className="m-auto text-muted-foreground/40 mt-8"
+                  />
+                )}
+              </div>
+              <div className="flex-1 p-5 flex flex-col sm:flex-row sm:items-center gap-4">
+                <div className="flex-1">
+                  <h3 className="font-bold text-foreground">{item.title}</h3>
+                  <p className="text-sm text-muted-foreground line-clamp-1">
+                    {item.description}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => openEdit(item)}
+                    className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-blue-50 text-blue-600"
+                  >
+                    <Edit2 size={16} />
+                  </button>
+                  <button
+                    onClick={() => setConfirmDelete(item._id)}
+                    className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-red-50 text-red-500"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              </div>
             </motion.div>
+          ))
+        )}
+      </div>
+
+      {/* Form Modal */}
+      <AnimatePresence>
+        {showForm && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4"
+            onClick={reset}
+          >
+            <motion.div
+              initial={{ scale: 0.95 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.95 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-white rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto shadow-2xl p-6"
+            >
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-lg font-bold">
+                  {editItem ? "Edit Gallery Item" : "New Gallery Item"}
+                </h3>
+                <X className="cursor-pointer" onClick={reset} />
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold mb-1">
+                    Title *
+                  </label>
+                  <input
+                    value={form.title}
+                    onChange={(e) =>
+                      setForm({ ...form, title: e.target.value })
+                    }
+                    className="w-full border p-3 rounded-sm text-sm"
+                    placeholder="Item title"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold mb-1">
+                    Description
+                  </label>
+                  <textarea
+                    value={form.description}
+                    onChange={(e) =>
+                      setForm({ ...form, description: e.target.value })
+                    }
+                    className="w-full border p-3 rounded-sm text-sm"
+                    rows={2}
+                    placeholder="Item description"
+                  />
+                </div>
+
+                {/* Image Selection */}
+                <div>
+                  <label className="block text-sm font-semibold mb-2">
+                    Image Source
+                  </label>
+                  <div className="flex gap-2 mb-3">
+                    {["url", "upload", "camera"].map((mode) => (
+                      <button
+                        key={mode}
+                        type="button"
+                        onClick={() => setImageMode(mode as any)}
+                        className={`px-4 py-1 text-xs rounded-full border ${imageMode === mode ? "bg-primary text-white" : "text-muted-foreground"}`}
+                      >
+                        {mode.toUpperCase()}
+                      </button>
+                    ))}
+                  </div>
+
+                  {imageMode === "url" && (
+                    <input
+                      value={form.image}
+                      onChange={(e) =>
+                        setForm({ ...form, image: e.target.value })
+                      }
+                      placeholder="https://..."
+                      className="w-full border p-3 rounded-sm text-sm"
+                    />
+                  )}
+
+                  {imageMode === "upload" && (
+                    <div
+                      onClick={() => fileRef.current?.click()}
+                      className="border-2 border-dashed rounded-sm py-6 text-center text-sm cursor-pointer hover:border-primary"
+                    >
+                      <input
+                        type="file"
+                        ref={fileRef}
+                        className="hidden"
+                        accept="image/*"
+                        onChange={handleFile}
+                      />
+                      Click to upload image
+                    </div>
+                  )}
+
+                  {imageMode === "camera" && (
+                    <div className="space-y-3">
+                      {!cameraOpen && !form.image && (
+                        <button
+                          type="button"
+                          onClick={openCamera}
+                          className="bg-black text-white px-4 py-2 text-sm rounded-sm"
+                        >
+                          Open Camera
+                        </button>
+                      )}
+                      {cameraOpen && (
+                        <div>
+                          <video
+                            ref={videoRef}
+                            autoPlay
+                            playsInline
+                            className="w-full rounded-lg mb-2"
+                          />
+                          <button
+                            type="button"
+                            onClick={captureFrame}
+                            className="bg-primary text-white px-4 py-2 text-sm rounded-sm"
+                          >
+                            Capture
+                          </button>
+                        </div>
+                      )}
+                      {form.image && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setForm((p) => ({ ...p, image: "" }));
+                            openCamera();
+                          }}
+                          className="text-xs text-muted-foreground flex items-center gap-1 mt-2"
+                        >
+                          <RotateCcw size={12} /> Retake
+                        </button>
+                      )}
+                      <canvas ref={canvasRef} className="hidden" />
+                    </div>
+                  )}
+
+                  {form.image && (
+                    <img
+                      src={form.image}
+                      className="mt-4 w-full h-44 object-cover rounded-lg border"
+                      alt="Preview"
+                    />
+                  )}
+                </div>
+
+                <div className="flex gap-3 pt-4">
+                  <button
+                    onClick={reset}
+                    className="flex-1 border py-3 text-sm font-semibold rounded-sm"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => saveItem(form)}
+                    disabled={isSaving || !form.title || !form.image}
+                    className="flex-1 bg-primary text-white font-bold py-3 rounded-sm flex justify-center disabled:opacity-50"
+                  >
+                    {isSaving ? (
+                      <Loader2 className="animate-spin" />
+                    ) : editItem ? (
+                      "Update Item"
+                    ) : (
+                      "Add to Gallery"
+                    )}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Delete Confirmation */}
+      <AnimatePresence>
+        {confirmDelete && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4"
+          >
+            <div className="bg-white rounded-2xl p-8 max-w-sm w-full text-center">
+              <Trash2 size={40} className="text-red-500 mx-auto mb-4" />
+              <h3 className="text-xl font-bold mb-2">Delete Item?</h3>
+              <p className="text-sm text-muted-foreground mb-6">
+                This will remove the item from your gallery and Cloudinary.
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setConfirmDelete(null)}
+                  className="flex-1 border py-2.5 rounded-sm"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => removeItem(confirmDelete)}
+                  className="flex-1 bg-red-500 text-white font-bold py-2.5 rounded-sm"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -873,6 +1217,8 @@ export default function AdminDashboard() {
   const tabs = [
     { key: "users" as const, label: "Users", icon: Users },
     { key: "banners" as const, label: "Banners", icon: ImageIcon },
+    { key: "gallery" as const, label: "Gallery", icon: BookImage },
+    { key: "admission" as const, label: "Admission", icon: ClipboardPenLine },
   ];
 
   return (
@@ -882,12 +1228,12 @@ export default function AdminDashboard() {
 
       <div className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 py-8 pt-24">
         {/* Tab nav */}
-        <div className="flex gap-1 bg-white rounded-xl border border-border p-1 w-fit mb-8 shadow-sm ">
+        <div className="flex flex-wrap gap-1 bg-white rounded-xl border border-border p-1 w-fit mb-8 shadow-sm ">
           {tabs.map((t) => (
             <button
               key={t.key}
               onClick={() => setTab(t.key)}
-              className={`flex items-center gap-2 px-6 py-2.5 text-sm font-semibold rounded-lg transition-all ${tab === t.key ? "bg-primary text-white shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+              className={`flex items-center grow gap-2 px-6 py-2.5 text-sm font-semibold rounded-lg transition-all ${tab === t.key ? "bg-primary text-white shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
             >
               <t.icon size={16} /> {t.label}
             </button>
@@ -902,7 +1248,10 @@ export default function AdminDashboard() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
           >
-            {tab === "users" ? <UsersTab /> : <BannersTab />}
+            {tab === "users" && <UsersTab />}
+            {tab === "banners" && <BannersTab />}
+            {tab === "gallery" && <GalleryTab />}
+            {tab === "admission" && <Redirect to="/admission" />}
           </motion.div>
         </AnimatePresence>
       </div>
