@@ -5,7 +5,7 @@ import { SERVICES } from "../../lib/data";
 
 export function ServicesGrid() {
   return (
-    <section id="services" className="py-24 bg-background relative">
+    <section id="services" className="py-24 bg-[linear-gradient(to_top,#FAF9F6,#FFF5E1)] relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <div className="inline-flex items-center space-x-2 bg-primary/5 px-6 py-2 rounded-full mb-6 border border-primary/10">
