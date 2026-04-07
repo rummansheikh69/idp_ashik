@@ -33,7 +33,7 @@ export function Footer() {
                 Visa Express
               </span>
             </Link>
-            <p className="text-white/70 text-sm leading-relaxed">
+            <p className="text-white/70 text-sm leading-relaxed text-justify">
               Your trusted partner for international visa processing,
               immigration consulting, and global mobility solutions. Experience
               the world without borders.
