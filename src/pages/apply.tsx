@@ -259,17 +259,13 @@ export default function ApplyPage() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                       <div>
                         <label className={labelCls}>Preferred Country *</label>
-                        <select
-                          required
+                        
+                        <input
                           value={form.country}
                           onChange={(e) => set("country", e.target.value)}
-                          className={inputCls + " appearance-none"}
-                        >
-                          <option value="">Select destination</option>
-                          {COUNTRIES.map((c) => (
-                            <option key={c}>{c}</option>
-                          ))}
-                        </select>
+                          placeholder="e.g. Computer Science, Business Administration"
+                          className={inputCls}
+                        />
                       </div>
                       <div>
                         <label className={labelCls}>Level of Study *</label>
@@ -284,6 +280,7 @@ export default function ApplyPage() {
                             <option key={l}>{l}</option>
                           ))}
                         </select>
+                        
                       </div>
                       <div className="sm:col-span-2">
                         <label className={labelCls}>
