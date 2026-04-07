@@ -27,7 +27,7 @@ export const SERVICES = [
     title: "Eligibility Check",
     icon: ClipboardCheck,
     image:
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800&auto=format&fit=crop",
+      "https://images.pexels.com/photos/11412596/pexels-photo-11412596.jpeg",
     shortDesc:
       "Visa Express offers a comprehensive student profile eligibility check to evaluate academic qualifications, study gaps, financial capacity, and career goals. Our experts identify suitable countries, universities, and programs, providing accurate guidance to strengthen applications and maximize visa success chances for students planning to study abroad.",
   },
@@ -36,7 +36,7 @@ export const SERVICES = [
     title: "Language Preparation",
     icon: BookOpenCheck,
     image:
-      "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=800&auto=format&fit=crop",
+      "https://images.pexels.com/photos/6549915/pexels-photo-6549915.jpeg",
     shortDesc:
       "Visa Express offers expert language preparation to help students and professionals achieve the required English proficiency for global opportunities. Our training covers IELTS and PTE, focusing on all four skills with structured lessons, mock tests, and personalized guidance—ensuring candidates are confident, well-prepared, and successful in high-stakes English exams.",
   },
@@ -45,7 +45,7 @@ export const SERVICES = [
     title: "Language Testing Partner",
     icon: Languages,
     image:
-      "https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=800&auto=format&fit=crop",
+      "https://images.pexels.com/photos/6684211/pexels-photo-6684211.jpeg",
     shortDesc:
       "Visa Express collaborates with authorized IDP IELTS testing partners to facilitate smooth and reliable exam registration for candidates. We provide complete support—from test booking to preparation guidance—ensuring a hassle-free experience. Our commitment is to help students and professionals confidently take the IELTS exam and achieve their desired scores.",
   },
@@ -54,7 +54,7 @@ export const SERVICES = [
     title: "Free Counselling",
     icon: Brain,
     image:
-      "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=800&auto=format&fit=crop",
+      "https://images.pexels.com/photos/3958461/pexels-photo-3958461.jpeg",
     shortDesc:
       "Visa Express offers free student visa counselling to guide aspiring students toward the right study destination. Our experts provide personalized advice on course selection, university options, admission requirements, and visa processes, ensuring students make informed decisions and confidently pursue their international education goals.",
   },
@@ -63,7 +63,7 @@ export const SERVICES = [
     title: "Free Application",
     icon: ClipboardPenLine,
     image:
-      "https://images.unsplash.com/photo-1511895426328-dc8714191011?q=80&w=800&auto=format&fit=crop",
+      "https://images.pexels.com/photos/8441786/pexels-photo-8441786.jpeg",
     shortDesc:
       "Visa Express offers a free application process for university admissions, assisting students with course selection, document preparation, and submission to international institutions. Our expert team ensures accurate and timely applications, increasing acceptance chances while providing a smooth, hassle-free experience for students pursuing higher education abroad.",
   },
@@ -72,7 +72,7 @@ export const SERVICES = [
     title: "Interview Preparation",
     icon: Users,
     image:
-      "https://images.unsplash.com/photo-1530521954074-e64f6810b32d?q=80&w=800&auto=format&fit=crop",
+      "https://images.pexels.com/photos/7643739/pexels-photo-7643739.jpeg",
     shortDesc:
       "Visa Express provides expert interview preparation for university or embassy requirements. Our training includes mock interviews, common questions, and personalized feedback to build confidence and communication skills. We ensure students are well-prepared to present themselves effectively and successfully pass admission and visa interviews.",
   },
