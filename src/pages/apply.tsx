@@ -263,7 +263,7 @@ export default function ApplyPage() {
                         <input
                           value={form.country}
                           onChange={(e) => set("country", e.target.value)}
-                          placeholder="e.g. Computer Science, Business Administration"
+                          placeholder="e.g. Canada"
                           className={inputCls}
                         />
                       </div>
