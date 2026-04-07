@@ -94,7 +94,7 @@ function App() {
           <Route
             path="/dashboard"
             component={() =>
-              authUser ? <AdminDashboard /> : <Redirect to="/login" />
+              authUser && authUser?.isAdmin ? <AdminDashboard /> : <Redirect to="/login" />
             }
           />
           <Route path="/about/director" component={DirectorPage} />
