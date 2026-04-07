@@ -8,8 +8,8 @@ export function ServicesGrid() {
     <section id="services" className="py-24 bg-background relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center space-x-2 bg-primary/5 px-4 py-2 rounded-full mb-6 border border-primary/10">
-            <h2 className="text-4xl md:text-5xl font-display font-bold text-primary mb-6">
+          <div className="inline-flex items-center space-x-2 bg-primary/5 px-6 py-2 rounded-full mb-6 border border-primary/10">
+            <h2 className="text-4xl md:text-5xl font-display font-bold text-primary">
             Our Services
           </h2>
           </div>
