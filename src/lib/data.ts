@@ -81,7 +81,7 @@ export const SERVICES = [
     title: "Visa Application",
     icon: ClipboardCheck,
     image:
-      "https://images.unsplash.com/photo-1530521954074-e64f6810b32d?q=80&w=800&auto=format&fit=crop",
+      "https://images.pexels.com/photos/7010140/pexels-photo-7010140.jpeg",
     shortDesc:
       "Visa Express provides complete visa application support, guiding clients through documentation, form completion, and submission to embassies. Our expert team ensures accuracy, compliance, and timely processing, reducing errors and delays. We aim to make the visa process smooth, efficient, and successful for students and professionals.",
   },
@@ -90,7 +90,7 @@ export const SERVICES = [
     title: "Accommodation",
     icon: Bed,
     image:
-      "https://images.unsplash.com/photo-1530521954074-e64f6810b32d?q=80&w=800&auto=format&fit=crop",
+      "https://images.pexels.com/photos/34119673/pexels-photo-34119673.jpeg",
     shortDesc:
       "Visa Express assists students in securing safe, comfortable, and affordable accommodation near their universities. We provide guidance on housing options, booking support, and relocation advice to ensure a smooth transition. Our goal is to help students settle and focus on their studies abroad.",
   },
@@ -99,7 +99,7 @@ export const SERVICES = [
     title: "Pre-Arrival and Air Ticket Confirmation",
     icon: TicketCheck,
     image:
-      "https://images.unsplash.com/photo-1530521954074-e64f6810b32d?q=80&w=800&auto=format&fit=crop",
+      "https://images.pexels.com/photos/7310015/pexels-photo-7310015.jpeg",
     shortDesc:
       "Visa Express provides complete pre-arrival support, including guidance on travel planning and air ticket confirmation. We assist students in booking affordable flights, preparing travel documents, and understanding arrival procedures, ensuring a smooth and stress-free journey to their study destination abroad.",
   },
