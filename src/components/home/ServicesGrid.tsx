@@ -9,13 +9,11 @@ export function ServicesGrid() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <div className="inline-flex items-center space-x-2 bg-primary/5 px-4 py-2 rounded-full mb-6 border border-primary/10">
-            <span className="text-primary font-semibold text-sm uppercase tracking-wider">
-              Solutions
-            </span>
-          </div>
-          <h2 className="text-4xl md:text-5xl font-display font-bold text-primary mb-6">
-            Our <span className="text-accent">Services</span>
+            <h2 className="text-4xl md:text-5xl font-display font-bold text-primary mb-6">
+            Our Services
           </h2>
+          </div>
+          
           <p className="text-lg text-muted-foreground">
             From study abroad guidance to visa processing, we provide end-to-end
             support for your international journey.
