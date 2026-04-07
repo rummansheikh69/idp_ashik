@@ -30,7 +30,7 @@ export function Footer() {
                 />
               </div>
               <span className="font-display font-bold text-2xl tracking-tight text-white">
-                Visa <span className="text-accent">Express</span>
+                Visa Express
               </span>
             </Link>
             <p className="text-white/70 text-sm leading-relaxed">
