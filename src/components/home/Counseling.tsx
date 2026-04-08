@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Phone, Mail, MapPin, Send, CheckCircle2 } from "lucide-react";
+import { Phone, Mail, MapPin, Send, CheckCircle2, Loader } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import { toast } from "react-hot-toast";
+import { SERVER_URL } from "../../lib/data";
 
 const COUNTRIES = [
   "United Kingdom",
@@ -33,8 +37,42 @@ export function Counseling() {
     email: "",
     phone: "",
     country: "",
-    program: "",
-    message: "",
+  });
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: (formData: any) => {
+      return axios.post(`${SERVER_URL}/api/user/counseling`, formData, {
+        headers: {
+          "Content-Type": "application/json", // if sending JSON
+        },
+      });
+    },
+    onSuccess: (data) => {
+      setSubmitted(true);
+
+      toast.success("Counseling submitted successfully!");
+    },
+    onError: (error: any) => {
+      // Check if it's an Axios error
+      if (axios.isAxiosError(error)) {
+        console.error("Axios Error Response:", error.response);
+        console.error("Axios Error Request:", error.request);
+        console.error("Axios Error Message:", error.message);
+
+        // Show detailed toast
+        if (error.response?.data?.error) {
+          toast.error(`Error: ${error.response.data.error}`);
+        } else if (error.response?.data?.message) {
+          toast.error(`Error: ${error.response.data.message}`);
+        } else {
+          toast.error(`Error: ${error.message}`);
+        }
+      } else {
+        // Non-Axios errors
+        console.error("Unknown Error:", error);
+        toast.error("Something went wrong!");
+      }
+    },
   });
 
   const set = (field: string, value: string) =>
@@ -42,7 +80,7 @@ export function Counseling() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    mutate(form);
   };
 
   return (
@@ -159,8 +197,6 @@ export function Counseling() {
                         email: "",
                         phone: "",
                         country: "",
-                        program: "",
-                        message: "",
                       });
                     }}
                     className="mt-8 text-sm font-semibold text-primary underline underline-offset-2"
@@ -231,10 +267,16 @@ export function Counseling() {
 
                     <button
                       type="submit"
-                      className="w-full bg-primary text-white font-bold py-4 rounded-xl hover:bg-primary/90 active:scale-[0.98] transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 text-base"
+                      className="w-full bg-primary text-white font-bold h-14 rounded-xl hover:bg-primary/90 active:scale-[0.98] transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 text-base"
                     >
-                      <Send className="w-4 h-4" />
-                      Send My Request
+                      {isPending ? (
+                        <Loader className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <>
+                          <Send className="w-4 h-4" />
+                          Send My Request
+                        </>
+                      )}
                     </button>
 
                     <p className="text-center text-xs text-muted-foreground">

@@ -1,8 +1,12 @@
 import { useState } from "react";
 import { Navbar } from "../components/layout/Navbar";
 import { Footer } from "../components/layout/Footer";
-import { CheckCircle2, Send } from "lucide-react";
+import { CheckCircle2, Loader, Send } from "lucide-react";
 import { Link } from "wouter";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import { SERVER_URL } from "../lib/data";
+import { toast } from "react-hot-toast";
 
 const FLAGS = [
   { code: "GB", name: "UK", flag: "🇬🇧", color: "from-blue-800 to-red-700" },
@@ -91,11 +95,55 @@ export default function ApplyPage() {
     message: "",
   });
 
+  const { mutate, isPending } = useMutation({
+    mutationFn: (formData: any) => {
+      return axios.post(`${SERVER_URL}/api/user/apply`, formData, {
+        headers: {
+          "Content-Type": "application/json", // if sending JSON
+        },
+      });
+    },
+    onSuccess: (data) => {
+      setSubmitted(true);
+      toast.success("Application form submitted successfully!");
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    },
+    onError: (error: any) => {
+      // Check if it's an Axios error
+      if (axios.isAxiosError(error)) {
+        console.error("Axios Error Response:", error.response);
+        console.error("Axios Error Request:", error.request);
+        console.error("Axios Error Message:", error.message);
+
+        // Show detailed toast
+        if (error.response?.data?.error) {
+          toast.error(`Error: ${error.response.data.error}`);
+        } else if (error.response?.data?.message) {
+          toast.error(`Error: ${error.response.data.message}`);
+        } else {
+          toast.error(`Error: ${error.message}`);
+        }
+      } else {
+        // Non-Axios errors
+        console.error("Unknown Error:", error);
+        toast.error("Something went wrong!");
+      }
+    },
+  });
+
   const set = (k: string, v: string) => setForm((f) => ({ ...f, [k]: v }));
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+
+    // Basic client-side validation
+    if (!form.firstName || !form.lastName || !form.email || !form.phone) {
+      toast.error("Please fill in all required fields.");
+      return;
+    }
+    mutate(form);
   };
 
   const inputCls =
@@ -259,7 +307,7 @@ export default function ApplyPage() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                       <div>
                         <label className={labelCls}>Preferred Country *</label>
-                        
+
                         <input
                           value={form.country}
                           onChange={(e) => set("country", e.target.value)}
@@ -280,7 +328,6 @@ export default function ApplyPage() {
                             <option key={l}>{l}</option>
                           ))}
                         </select>
-                        
                       </div>
                       <div className="sm:col-span-2">
                         <label className={labelCls}>
@@ -356,7 +403,13 @@ export default function ApplyPage() {
                     type="submit"
                     className="w-full bg-primary text-white font-bold py-4 rounded-xl hover:bg-primary/90 active:scale-[0.99] transition-all shadow-xl shadow-primary/25 flex items-center justify-center gap-2 text-base"
                   >
-                    <Send className="w-4 h-4" /> Submit My Application
+                    {isPending ? (
+                      <Loader className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <>
+                        <Send className="w-4 h-4" /> Submit My Application
+                      </>
+                    )}
                   </button>
                   <p className="text-center text-xs text-muted-foreground">
                     By submitting, you agree to our privacy policy. Your

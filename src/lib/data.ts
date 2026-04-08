@@ -19,7 +19,8 @@ import {
   TicketCheck,
 } from "lucide-react";
 
-export const SERVER_URL = "https://idp-backend-delta.vercel.app";
+// export const SERVER_URL = "https://idp-backend-delta.vercel.app";
+export const SERVER_URL = "http://localhost:4000";
 
 export const SERVICES = [
   {
@@ -35,8 +36,7 @@ export const SERVICES = [
     id: "language-preparation",
     title: "Language Preparation",
     icon: BookOpenCheck,
-    image:
-      "https://images.pexels.com/photos/6549915/pexels-photo-6549915.jpeg",
+    image: "https://images.pexels.com/photos/6549915/pexels-photo-6549915.jpeg",
     shortDesc:
       "Visa Express offers expert language preparation to help students and professionals achieve the required English proficiency for global opportunities. Our training covers IELTS and PTE, focusing on all four skills with structured lessons, mock tests, and personalized guidance—ensuring candidates are confident, well-prepared, and successful in high-stakes English exams.",
   },
@@ -44,8 +44,7 @@ export const SERVICES = [
     id: "language-testing-partner",
     title: "Language Testing Partner",
     icon: Languages,
-    image:
-      "https://images.pexels.com/photos/6684211/pexels-photo-6684211.jpeg",
+    image: "https://images.pexels.com/photos/6684211/pexels-photo-6684211.jpeg",
     shortDesc:
       "Visa Express collaborates with authorized IDP IELTS testing partners to facilitate smooth and reliable exam registration for candidates. We provide complete support—from test booking to preparation guidance—ensuring a hassle-free experience. Our commitment is to help students and professionals confidently take the IELTS exam and achieve their desired scores.",
   },
@@ -53,8 +52,7 @@ export const SERVICES = [
     id: "free-counselling",
     title: "Free Counselling",
     icon: Brain,
-    image:
-      "https://images.pexels.com/photos/3958461/pexels-photo-3958461.jpeg",
+    image: "https://images.pexels.com/photos/3958461/pexels-photo-3958461.jpeg",
     shortDesc:
       "Visa Express offers free student visa counselling to guide aspiring students toward the right study destination. Our experts provide personalized advice on course selection, university options, admission requirements, and visa processes, ensuring students make informed decisions and confidently pursue their international education goals.",
   },
@@ -62,8 +60,7 @@ export const SERVICES = [
     id: "free-application",
     title: "Free Application",
     icon: ClipboardPenLine,
-    image:
-      "https://images.pexels.com/photos/8441786/pexels-photo-8441786.jpeg",
+    image: "https://images.pexels.com/photos/8441786/pexels-photo-8441786.jpeg",
     shortDesc:
       "Visa Express offers a free application process for university admissions, assisting students with course selection, document preparation, and submission to international institutions. Our expert team ensures accurate and timely applications, increasing acceptance chances while providing a smooth, hassle-free experience for students pursuing higher education abroad.",
   },
@@ -71,8 +68,7 @@ export const SERVICES = [
     id: "interview-preparation",
     title: "Interview Preparation",
     icon: Users,
-    image:
-      "https://images.pexels.com/photos/7643739/pexels-photo-7643739.jpeg",
+    image: "https://images.pexels.com/photos/7643739/pexels-photo-7643739.jpeg",
     shortDesc:
       "Visa Express provides expert interview preparation for university or embassy requirements. Our training includes mock interviews, common questions, and personalized feedback to build confidence and communication skills. We ensure students are well-prepared to present themselves effectively and successfully pass admission and visa interviews.",
   },
@@ -80,8 +76,7 @@ export const SERVICES = [
     id: "visa-application",
     title: "Visa Application",
     icon: ClipboardCheck,
-    image:
-      "https://images.pexels.com/photos/7010140/pexels-photo-7010140.jpeg",
+    image: "https://images.pexels.com/photos/7010140/pexels-photo-7010140.jpeg",
     shortDesc:
       "Visa Express provides complete visa application support, guiding clients through documentation, form completion, and submission to embassies. Our expert team ensures accuracy, compliance, and timely processing, reducing errors and delays. We aim to make the visa process smooth, efficient, and successful for students and professionals.",
   },
@@ -98,8 +93,7 @@ export const SERVICES = [
     id: "pre-arrival-support",
     title: "Pre-Arrival and Air Ticket Confirmation",
     icon: TicketCheck,
-    image:
-      "https://images.pexels.com/photos/7310015/pexels-photo-7310015.jpeg",
+    image: "https://images.pexels.com/photos/7310015/pexels-photo-7310015.jpeg",
     shortDesc:
       "Visa Express provides complete pre-arrival support, including guidance on travel planning and air ticket confirmation. We assist students in booking affordable flights, preparing travel documents, and understanding arrival procedures, ensuring a smooth and stress-free journey to their study destination abroad.",
   },
