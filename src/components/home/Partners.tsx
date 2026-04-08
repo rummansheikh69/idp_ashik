@@ -25,12 +25,12 @@ export function Partners() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="flex justify-center"
+            className="flex justify-center bg-red-300"
           >
             <img
               src="/partners.png"
               alt="Our global partners — British Council, IDP, Pearson, Edvoy, Navitas"
-              className=" w-[443px] object-contain"
+              className=" w-full object-contain"
               style={{ filter: "grayscale(0%)" }}
             />
           </motion.div>
