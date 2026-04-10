@@ -106,9 +106,6 @@ export default function ApplyPage() {
     onSuccess: (data) => {
       setSubmitted(true);
       toast.success("Application form submitted successfully!");
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
     },
     onError: (error: any) => {
       // Check if it's an Axios error

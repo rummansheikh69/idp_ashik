@@ -262,7 +262,7 @@ export function Footer() {
               </li>
               <li className="flex items-center space-x-3 text-white/70">
                 <Mail className="w-5 h-5 text-accent shrink-0" />
-                <span>khulna@visaexpressbd.com</span>
+                <span>contact@visaexpressbd.com</span>
               </li>
             </ul>
           </div>

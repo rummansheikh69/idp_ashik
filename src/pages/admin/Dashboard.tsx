@@ -27,6 +27,9 @@ import {
   ClipboardPenLine,
   BookImage,
   Loader2,
+  LogOutIcon,
+  Loader,
+  Lock,
 } from "lucide-react";
 import { Navbar } from "../../components/layout/Navbar";
 import { Redirect } from "wouter";
@@ -65,39 +68,6 @@ interface Banner {
   tag: string;
   createdAt: string;
 }
-
-// ── Helpers ──────────────────────────────────────────────────────────
-const getUsers = (): User[] =>
-  JSON.parse(localStorage.getItem("mahdi_ielts_users") || "[]");
-const saveUsers = (u: User[]) =>
-  localStorage.setItem("mahdi_ielts_users", JSON.stringify(u));
-const getBanners = (): Banner[] =>
-  JSON.parse(localStorage.getItem("mahdi_ielts_banners") || "[]");
-const saveBanners = (b: Banner[]) =>
-  localStorage.setItem("mahdi_ielts_banners", JSON.stringify(b));
-
-const statusConfig = {
-  pending: {
-    label: "Pending",
-    color: "bg-amber-100 text-amber-700",
-    icon: Clock,
-  },
-  enrolled: {
-    label: "Enrolled",
-    color: "bg-blue-100 text-blue-700",
-    icon: BookOpen,
-  },
-  completed: {
-    label: "Completed",
-    color: "bg-green-100 text-green-700",
-    icon: CheckCircle2,
-  },
-  rejected: {
-    label: "Rejected",
-    color: "bg-red-100 text-red-700",
-    icon: XCircle,
-  },
-};
 
 // ── Users Tab ────────────────────────────────────────────────────────
 function UsersTab() {
@@ -1210,6 +1180,95 @@ function GalleryTab() {
   );
 }
 
+function PasswordTab() {
+  const queryClient = useQueryClient();
+
+  const [form, setForm] = useState({
+    newPassword: "",
+    confirmNewPassword: "",
+  });
+
+  const { mutate: changePassword, isPending: isChangingPassword } = useMutation(
+    {
+      mutationFn: async () => {
+        const res = await fetch(`${SERVER_URL}/api/auth/change-password`, {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(form),
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || "Operation failed");
+        return data;
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["authUser"] });
+      },
+      onError: (err: any) => toast.error(err.message),
+    },
+  );
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h2 className="text-xl font-bold text-foreground">Change Password</h2>
+          <p className="text-sm text-muted-foreground">
+            Change your account password here.
+          </p>
+        </div>
+      </div>
+
+      <div>
+        <input
+          type="text"
+          placeholder="New Password"
+          className="w-full md:w-1/2 border p-3 rounded-sm text-sm"
+          value={form.newPassword}
+          onChange={(e) => setForm({ ...form, newPassword: e.target.value })}
+          required
+        />
+      </div>
+      <div>
+        <input
+          type="text"
+          placeholder="Confirm New Password"
+          className=" w-full md:w-1/2 border p-3 rounded-sm text-sm mt-5"
+          value={form.confirmNewPassword}
+          onChange={(e) =>
+            setForm({ ...form, confirmNewPassword: e.target.value })
+          }
+          required
+        />
+      </div>
+
+      {form.confirmNewPassword.length > 2 &&
+        form.newPassword !== form.confirmNewPassword && (
+          <p className="text-red-500 text-sm mt-2">Passwords do not match</p>
+        )}
+
+      <button
+        disabled={
+          form.confirmNewPassword.length < 6 ||
+          form.newPassword.length < 6 ||
+          form.confirmNewPassword !== form.newPassword
+        }
+        onClick={() => changePassword()}
+        className="bg-black text-white font-bold py-2.5 px-6 rounded-sm mt-5 cursor-pointer"
+      >
+        {isChangingPassword ? (
+          <Loader2 className="animate-spin" />
+        ) : (
+          "Change Password"
+        )}
+      </button>
+    </div>
+  );
+}
+
 // ── Main Dashboard ───────────────────────────────────────────────────
 export default function AdminDashboard() {
   const [tab, setTab] = useState<"users" | "banners">("users");
@@ -1218,8 +1277,28 @@ export default function AdminDashboard() {
     { key: "users" as const, label: "Users", icon: Users },
     { key: "banners" as const, label: "Banners", icon: ImageIcon },
     { key: "gallery" as const, label: "Gallery", icon: BookImage },
+    { key: "password" as const, label: "Password", icon: Lock },
     { key: "admission" as const, label: "Admission", icon: ClipboardPenLine },
   ];
+
+  const queryClient = useQueryClient();
+
+  const { mutate: logout, isPending: isLoggingOut } = useMutation({
+    mutationFn: async () => {
+      const res = await fetch(`${SERVER_URL}/api/auth/logout`, {
+        method: "POST",
+        credentials: "include",
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Operation failed");
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["authUser"] });
+    },
+    onError: (err: any) => toast.error(err.message),
+  });
 
   return (
     <div className="min-h-screen bg-secondary/30 flex flex-col">
@@ -1227,17 +1306,33 @@ export default function AdminDashboard() {
       <Navbar />
 
       <div className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 py-8 pt-24">
-        {/* Tab nav */}
-        <div className="flex flex-wrap gap-1 bg-white rounded-xl border border-border p-1 w-fit mb-8 shadow-sm ">
-          {tabs.map((t) => (
-            <button
-              key={t.key}
-              onClick={() => setTab(t.key)}
-              className={`flex items-center grow gap-2 px-6 py-2.5 text-sm font-semibold rounded-lg transition-all ${tab === t.key ? "bg-primary text-white shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
-            >
-              <t.icon size={16} /> {t.label}
-            </button>
-          ))}
+        <div className=" flex items-center md:justify-between gap-4 mb-8">
+          {/* Tab nav */}
+          <div className="flex flex-wrap gap-1 bg-white rounded-xl border border-border p-1 w-fit  shadow-sm ">
+            {tabs.map((t) => (
+              <button
+                key={t.key}
+                onClick={() => setTab(t.key)}
+                className={`flex items-center grow gap-2 px-6 py-2.5 text-sm font-semibold rounded-lg transition-all ${tab === t.key ? "bg-primary text-white shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+              >
+                <t.icon size={16} /> {t.label}
+              </button>
+            ))}
+          </div>
+
+          <button
+            onClick={() => logout()}
+            className=" w-12 h-10 flex items-center justify-center bg-white rounded-lg border border-border shadow-sm cursor-pointer"
+          >
+            {isLoggingOut ? (
+              <Loader2
+                className="animate-spin text-muted-foreground"
+                size={16}
+              />
+            ) : (
+              <LogOutIcon size={17} />
+            )}
+          </button>
         </div>
 
         <AnimatePresence mode="wait">
@@ -1252,6 +1347,7 @@ export default function AdminDashboard() {
             {tab === "banners" && <BannersTab />}
             {tab === "gallery" && <GalleryTab />}
             {tab === "admission" && <Redirect to="/admission" />}
+            {tab === "password" && <PasswordTab />}
           </motion.div>
         </AnimatePresence>
       </div>

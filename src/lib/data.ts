@@ -19,8 +19,8 @@ import {
   TicketCheck,
 } from "lucide-react";
 
-export const SERVER_URL = "https://idp-backend-delta.vercel.app";
-// export const SERVER_URL = "http://localhost:4000";
+// export const SERVER_URL = "https://idp-backend-delta.vercel.app";
+export const SERVER_URL = "http://localhost:4000";
 
 export const SERVICES = [
   {
