@@ -52,7 +52,7 @@ export function HeroSlider() {
   }
 
   return (
-    <div className="relative h-[79svh] min-h-[600px] w-full bg-primary overflow-hidden">
+    <div className="relative h-[79vh] min-h-[600px] w-full bg-primary overflow-hidden">
       <AnimatePresence mode="wait">
         <motion.div
           key={slides[current]._id} // Use MongoDB ID as key for smooth transitions
