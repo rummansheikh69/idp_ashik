@@ -5,15 +5,15 @@ import { SERVICES } from "../../lib/data";
 
 export function ServicesGrid() {
   return (
-    <section id="services" className="py-24 bg-[linear-gradient(to_top,#FAF9F6,#FFF5E1)] relative">
+    <section id="services" className="py-24  relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <div className="inline-flex items-center space-x-2 bg-primary/5 px-6 py-2 rounded-full mb-6 border border-primary/10">
-            <h2 className="text-3xl md:text-5xl font-display font-bold text-primary">
-            Our Services
-          </h2>
+            <h2 className="text-3xl md:text-4xl font-display font-bold text-primary">
+              Our Services
+            </h2>
           </div>
-          
+
           <p className="text-lg text-muted-foreground">
             From study abroad guidance to visa processing, we provide end-to-end
             support for your international journey.
@@ -35,6 +35,9 @@ export function ServicesGrid() {
                 <img
                   src={service.image}
                   alt={service.title}
+                  loading="lazy"
+                  decoding="async"
+                  fetchpriority="low"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 {/* Overlay gradient */}
