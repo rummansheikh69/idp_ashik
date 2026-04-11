@@ -32,12 +32,10 @@ export function Testimonials() {
       {/* Heading */}
       <div className="text-center mb-14 relative z-10">
         <div className="inline-flex items-center space-x-2 bg-primary/8 px-6 py-2 rounded-full mb-5 border border-primary/12">
-          <h2 className="text-3xl md:text-5xl font-display font-bold text-primary">
-          Success Stories
-          
-        </h2>
+          <h2 className="text-3xl md:text-3xl uppercase font-display font-bold text-primary">
+            Success Stories
+          </h2>
         </div>
-        
       </div>
       <div className="max-w-6xl mx-auto px-4 relative">
         <button
