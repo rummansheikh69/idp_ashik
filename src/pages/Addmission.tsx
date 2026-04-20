@@ -121,6 +121,7 @@ export default function Admission() {
         headers: {
           "Content-Type": "application/json", // if sending JSON
         },
+        withCredentials: true, // Include cookies in the request
       });
     },
     onSuccess: (data) => {
@@ -179,54 +180,54 @@ export default function Admission() {
   };
 
   const openCamera = async () => {
-  stopCamera();
-  setCameraOpen(true);
+    stopCamera();
+    setCameraOpen(true);
 
-  try {
-    let constraints: MediaStreamConstraints;
+    try {
+      let constraints: MediaStreamConstraints;
 
-    // Detect if mobile
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      // Detect if mobile
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-    if (isMobile) {
-      constraints = {
-        video: {
-          facingMode: facingMode,
-          width: 640,
-          height: 480,
-        },
-      };
-    } else {
-      // Desktop / Laptop
-      constraints = {
-        video: {
-          width: 640,
-          height: 480,
-        },
-      };
+      if (isMobile) {
+        constraints = {
+          video: {
+            facingMode: facingMode,
+            width: 640,
+            height: 480,
+          },
+        };
+      } else {
+        // Desktop / Laptop
+        constraints = {
+          video: {
+            width: 640,
+            height: 480,
+          },
+        };
+      }
+
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+
+      streamRef.current = stream;
+
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        videoRef.current.play(); // 🔥 IMPORTANT for laptop
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Camera error: " + err);
     }
-
-    const stream = await navigator.mediaDevices.getUserMedia(constraints);
-
-    streamRef.current = stream;
-
-    if (videoRef.current) {
-      videoRef.current.srcObject = stream;
-      videoRef.current.play(); // 🔥 IMPORTANT for laptop
-    }
-  } catch (err) {
-    console.error(err);
-    alert("Camera error: " + err);
-  }
-};
+  };
 
   const toggleCamera = () => {
-  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-  if (!isMobile) return; // ❌ prevent breaking webcam
+    if (!isMobile) return; // ❌ prevent breaking webcam
 
-  setFacingMode((prev) => (prev === "user" ? "environment" : "user"));
-};
+    setFacingMode((prev) => (prev === "user" ? "environment" : "user"));
+  };
 
   // Re-run camera when facingMode changes
   useEffect(() => {
