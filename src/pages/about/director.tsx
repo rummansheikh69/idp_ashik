@@ -100,24 +100,6 @@ export default function DirectorPage() {
                       </p>
                     ))}
                   </div>
-                  {/* Signature */}
-                  <div className="mt-10 pt-8 border-t border-border flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-primary/20">
-                      <img
-                        src="/director.jpeg"
-                        alt="Director signature"
-                        className="w-full h-full object-cover object-top"
-                      />
-                    </div>
-                    <div>
-                      <p className="font-display font-bold text-primary">
-                        Ashik Rahman
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        Founder & Director, Visa Express
-                      </p>
-                    </div>
-                  </div>
                 </div>
               </div>
 
